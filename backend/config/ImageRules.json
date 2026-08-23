@@ -1,0 +1,1302 @@
+{
+  "version": "1.0.0",
+  "engine": "AI Image Teaching Engine",
+  "description": "Universal image generation rules for educational tutorials from Class 1 to Class 12.",
+  "supportedBoards": [
+    "NCERT",
+    "CBSE",
+    "State Board"
+  ],
+  "supportedLanguages": [
+    "English"
+  ],
+  "supportedClasses": [
+
+    "Class1",
+
+    "Class2",
+
+    "Class3",
+
+    "Class4",
+
+    "Class5",
+
+    "Class6",
+
+    "Class7",
+
+    "Class8",
+
+    "Class9",
+
+    "Class10",
+
+    "Class11",
+
+    "Class12"
+
+  ],
+"globalImageRules": {
+
+  "everySceneNeedsImage": true,
+
+  "imageMustTeachConcept": true,
+
+  "imageShouldBeEnoughToUnderstandConcept": true,
+
+  "imageMustMatchNarration": true,
+
+  "imageMustMatchDisplayText": true,
+
+  "imageMustMatchHeading": true,
+
+  "imageMustBeEducational": true,
+
+  "imageMustBeInteresting": true,
+
+  "imageMustBeBeautiful": true,
+
+  "imageMustBeColorful": true,
+
+  "imageMustBeHighQuality": true,
+
+  "imageMustBeLandscape": true,
+
+  "aspectRatio": "16:9",
+
+  "minimumResolution": "1920x1080",
+
+  "prefer4KQuality": true,
+
+  "noWatermark": true,
+
+  "noLogo": true,
+
+  "noBorders": true,
+
+  "noCropping": true,
+
+  "noBlur": true,
+
+  "noNoise": true,
+
+  "professionalComposition": true,
+
+  "cinematicLook": true,
+
+  "educationalPosterStyle": true,
+
+  "modernIllustration": true,
+
+  "highVisualAppeal": true,
+
+  "kidFriendly": true,
+
+  "focusOnLearning": true
+
+},
+"visualDiversityRules": {
+
+  "description": "Rules to ensure every generated image is visually unique and educational.",
+
+  "neverRepeatBackground": true,
+
+  "neverRepeatClassroom": true,
+
+  "neverRepeatOutdoorLocation": true,
+
+  "neverRepeatTeacher": true,
+
+  "neverRepeatTeacherPose": true,
+
+  "neverRepeatTeacherExpression": true,
+
+  "neverRepeatStudentGroup": true,
+
+  "neverRepeatStudentPose": true,
+
+  "neverRepeatStudentExpression": true,
+
+  "neverRepeatCameraAngle": true,
+
+  "neverRepeatComposition": true,
+
+  "neverRepeatObjectPlacement": true,
+
+  "neverRepeatColorPalette": true,
+
+  "neverRepeatLighting": true,
+
+  "neverRepeatPerspective": true,
+
+  "neverRepeatVisualTheme": true,
+
+  "neverRepeatSceneLayout": true,
+
+  "neverRepeatEducationalObjects": true,
+
+  "neverRepeatProps": true,
+
+  "neverRepeatFocusArea": true,
+
+  "minimumDifferenceBetweenScenes": "Very High",
+
+  "allowCreativeVariations": true,
+
+  "allowDifferentArtStylesWithinRules": false,
+
+  "forceUniqueVisualIdentity": true,
+
+  "preferFreshComposition": true,
+
+  "preferNewEnvironment": true,
+
+  "preferDifferentLearningSituation": true,
+
+  "preferDifferentInteraction": true,
+
+  "regenerateIfTooSimilar": true,
+
+  "similarityThreshold": 0.30
+
+}
+,
+"cameraCompositionRules": {
+
+  "description": "Rules for camera positioning, framing and composition of educational illustrations.",
+
+  "allowDynamicCameraAngles": true,
+
+  "avoidSameCameraAngleInConsecutiveScenes": true,
+
+  "preferConceptFocusedComposition": true,
+
+  "keepMainConceptInCenter": true,
+
+  "keepImportantObjectsClearlyVisible": true,
+
+  "avoidObjectCropping": true,
+
+  "avoidHiddenImportantElements": true,
+
+  "maintainVisualBalance": true,
+
+  "maintainNegativeSpace": true,
+
+  "allowForegroundObjects": true,
+
+  "allowBackgroundDepth": true,
+
+  "useDepthOfField": false,
+
+  "cameraAnglePool": [
+
+    "Front View",
+
+    "Three Quarter View",
+
+    "Side View",
+
+    "Top View",
+
+    "Low Angle",
+
+    "Eye Level",
+
+    "Wide View",
+
+    "Close Up",
+
+    "Overhead Educational View",
+
+    "Perspective View"
+
+  ],
+
+  "preferredShotTypes": [
+
+    "Wide Shot",
+
+    "Medium Shot",
+
+    "Close Educational View"
+
+  ],
+
+  "highlightCurrentLearningPoint": true,
+
+  "diagramShouldOccupyMajorArea": true,
+
+  "teacherShouldNotBlockDiagram": true,
+
+  "studentsShouldLookAtConcept": true,
+
+  "cameraMustSupportLearning": true
+
+}
+,
+"teacherCharacterRules": {
+
+  "description": "Rules for generating the teacher character in educational illustrations.",
+
+  "teacherShouldAppearOnlyWhenHelpful": true,
+
+  "teacherShouldGuideLearning": true,
+
+  "teacherShouldNeverBlockDiagram": true,
+
+  "teacherShouldNeverBlockFormula": true,
+
+  "teacherShouldNeverBlockImportantObjects": true,
+
+  "teacherShouldFaceStudentsOrConcept": true,
+
+  "teacherShouldPointTowardsLearningPoint": true,
+
+  "teacherShouldUseNaturalTeachingGestures": true,
+
+  "teacherShouldShowPositiveExpressions": true,
+
+  "teacherShouldLookFriendly": true,
+
+  "teacherShouldLookConfident": true,
+
+  "teacherShouldEncourageStudents": true,
+
+  "teacherShouldMaintainEyeContact": false,
+
+  "teacherShouldWearSimpleProfessionalDress": true,
+
+  "teacherShouldNotDominateScene": true,
+
+  "teacherShouldSupportConcept": true,
+
+  "allowMaleTeacher": true,
+
+  "allowFemaleTeacher": true,
+
+  "allowTeacherMovement": true,
+
+  "allowPointer": true,
+
+  "allowChalk": true,
+
+  "allowDigitalPen": true,
+
+  "allowSmartBoardInteraction": true,
+
+  "allowBlackboardInteraction": true,
+
+  "teacherPositionOptions": [
+
+    "Left",
+
+    "Right",
+
+    "Front Corner",
+
+    "Near Diagram",
+
+    "Near Students"
+
+  ],
+
+  "teacherExpressionOptions": [
+
+    "Explaining",
+
+    "Smiling",
+
+    "Encouraging",
+
+    "Thinking",
+
+    "Asking Question"
+
+  ]
+
+}
+,
+"studentCharacterRules": {
+
+  "description": "Rules for generating student characters according to class level and learning activity.",
+
+  "studentsShouldMatchClassLevel": true,
+
+  "studentsShouldLookAgeAppropriate": true,
+
+  "studentsShouldInteractWithLearning": true,
+
+  "studentsShouldObserveConcept": true,
+
+  "studentsShouldShowNaturalExpressions": true,
+
+  "studentsShouldParticipateActively": true,
+
+  "studentsShouldNeverBlockImportantContent": true,
+
+  "studentsShouldLookTowardsTeacherOrConcept": true,
+
+  "studentsShouldAppearCurious": true,
+
+  "studentsShouldAppearEngaged": true,
+
+  "studentsShouldAppearHappy": true,
+
+  "studentsShouldAppearThinking": true,
+
+  "studentsShouldUseEducationalObjects": true,
+
+  "studentsShouldHoldBooksWhenRequired": true,
+
+  "studentsShouldWriteWhenRequired": true,
+
+  "studentsShouldPerformActivitiesWhenRequired": true,
+
+  "studentsShouldUseLabEquipmentWhenRequired": true,
+
+  "studentsShouldUseComputerWhenRequired": true,
+
+  "allowIndividualStudent": true,
+
+  "allowSmallGroup": true,
+
+  "allowWholeClass": true,
+
+  "allowPairDiscussion": true,
+
+  "allowOutdoorLearning": true,
+
+  "allowLabLearning": true,
+
+  "allowLibraryLearning": true,
+
+  "allowSmartClassroom": true,
+
+  "avoidIdenticalFaces": true,
+
+  "avoidIdenticalPoses": true,
+
+  "avoidIdenticalClothing": true,
+
+  "avoidIdenticalHairstyles": true,
+
+  "diversityLevel": "High",
+
+  "emotionPool": [
+
+    "Curious",
+
+    "Thinking",
+
+    "Excited",
+
+    "Observing",
+
+    "Discussing",
+
+    "Writing",
+
+    "Answering",
+
+    "Smiling"
+
+  ]
+
+}
+,
+"educationalObjectRules": {
+
+  "description": "Rules for selecting educational objects according to subject and concept.",
+
+  "alwaysUseRelevantObjects": true,
+
+  "neverUseRandomObjects": true,
+
+  "objectsShouldSupportLearning": true,
+
+  "objectsShouldMatchNarration": true,
+
+  "objectsShouldMatchImagePurpose": true,
+
+  "avoidObjectOvercrowding": true,
+
+  "highlightImportantObjects": true,
+
+  "allowInteractiveObjects": true,
+
+  "allowDigitalLearningTools": true,
+
+  "allowPhysicalLearningTools": true,
+
+  "mathObjects": [
+
+    "Numbers",
+
+    "Number Cards",
+
+    "Abacus",
+
+    "Counting Blocks",
+
+    "Ruler",
+
+    "Compass",
+
+    "Protractor",
+
+    "Geometry Box",
+
+    "Graph Paper",
+
+    "Fraction Circles",
+
+    "Dice",
+
+    "Pattern Blocks"
+
+  ],
+
+  "scienceObjects": [
+
+    "Microscope",
+
+    "Magnifying Glass",
+
+    "Plants",
+
+    "Flowers",
+
+    "Leaves",
+
+    "Solar System",
+
+    "Human Body Model",
+
+    "Skeleton Model",
+
+    "Beaker",
+
+    "Test Tubes",
+
+    "Thermometer",
+
+    "Magnet"
+
+  ],
+
+  "geographyObjects": [
+
+    "Globe",
+
+    "World Map",
+
+    "India Map",
+
+    "Compass",
+
+    "Mountains",
+
+    "River",
+
+    "Volcano",
+
+    "Weather Symbols",
+
+    "Satellite Image"
+
+  ],
+
+  "historyObjects": [
+
+    "Timeline",
+
+    "Ancient Coins",
+
+    "Temple",
+
+    "Fort",
+
+    "King",
+
+    "Queen",
+
+    "Monument",
+
+    "Old Map",
+
+    "Historical Painting"
+
+  ],
+
+  "computerObjects": [
+
+    "Laptop",
+
+    "Desktop Computer",
+
+    "Keyboard",
+
+    "Mouse",
+
+    "Monitor",
+
+    "Code Editor",
+
+    "Database",
+
+    "Server",
+
+    "Network Diagram"
+
+  ],
+
+  "languageObjects": [
+
+    "Story Book",
+
+    "Notebook",
+
+    "Speech Bubble",
+
+    "Flash Cards",
+
+    "Letter Cards",
+
+    "Poem Book",
+
+    "Dictionary"
+
+  ]
+
+}
+,
+"contentTypeImageRules": {
+
+  "description": "Image generation rules based on detected educational content type.",
+
+  "Introduction": {
+    "focus": "Create curiosity",
+    "teacherVisible": true,
+    "studentsVisible": true,
+    "showMainConcept": true,
+    "realLifeContext": true
+  },
+
+  "Definition": {
+    "focus": "Single concept",
+    "largeTitle": true,
+    "minimalDistraction": true,
+    "highlightKeyword": true,
+    "visualExample": true
+  },
+
+  "Concept": {
+    "focus": "Concept visualization",
+    "showRelationships": true,
+    "realLifeSupport": true,
+    "stepwiseLearning": true
+  },
+
+  "Rule": {
+    "focus": "Rule explanation",
+    "highlightRule": true,
+    "teacherPointing": true,
+    "simpleBackground": true
+  },
+
+  "Formula": {
+    "focus": "Formula understanding",
+    "formulaLarge": true,
+    "highlightVariables": true,
+    "showMeaning": true,
+    "stepwiseBreakdown": true
+  },
+
+  "Equation": {
+    "focus": "Equation solving",
+    "oneStepHighlighted": true,
+    "showCalculationFlow": true,
+    "avoidExtraObjects": true
+  },
+
+  "Diagram": {
+    "focus": "Diagram explanation",
+    "diagramDominatesScene": true,
+    "labelsLarge": true,
+    "highlightCurrentPart": true,
+    "teacherBesideDiagram": true
+  },
+
+  "Table": {
+    "focus": "Easy comparison",
+    "highlightCurrentRow": true,
+    "largeReadableCells": true
+  },
+
+  "Graph": {
+    "focus": "Graph reading",
+    "highlightTrend": true,
+    "showAxesClearly": true,
+    "showImportantPoint": true
+  },
+
+  "Map": {
+    "focus": "Location learning",
+    "highlightLocation": true,
+    "showCompass": true,
+    "showLabels": true
+  },
+
+  "Timeline": {
+    "focus": "Chronological understanding",
+    "largeTimeline": true,
+    "highlightCurrentEvent": true
+  },
+
+  "Example": {
+    "focus": "Practical understanding",
+    "realLifeScene": true,
+    "studentsParticipating": true
+  },
+
+  "SolvedExample": {
+    "focus": "Step by step solution",
+    "highlightCurrentStep": true,
+    "showAnswerProgress": true
+  },
+
+  "Activity": {
+    "focus": "Hands-on learning",
+    "studentsDoingActivity": true,
+    "teacherGuiding": true
+  },
+
+  "Experiment": {
+    "focus": "Scientific observation",
+    "labSetup": true,
+    "equipmentVisible": true,
+    "observationHighlighted": true
+  },
+
+  "Story": {
+    "focus": "Character based learning",
+    "expressiveCharacters": true,
+    "richBackground": true,
+    "emotionFocused": true
+  },
+
+  "Summary": {
+    "focus": "Quick revision",
+    "icons": true,
+    "keyPointsHighlighted":true,
+    "cleanLayout": true
+  }
+
+},
+"purposeBasedImageRules": {
+
+  "description": "Rules for selecting the visual style based on the teaching purpose of the scene.",
+
+  "AttentionGrab": {
+
+    "goal": "Capture student attention immediately",
+
+    "brightColors": true,
+
+    "largeObjects": true,
+
+    "highContrast": true,
+
+    "happyCharacters": true,
+
+    "dynamicComposition": true
+
+  },
+
+  "ConceptIntroduction": {
+
+    "goal": "Introduce a new concept clearly",
+
+    "teacherVisible": true,
+
+    "mainConceptHighlighted": true,
+
+    "simpleBackground": true,
+
+    "minimalDistraction": true
+
+  },
+
+  "ConceptExplanation": {
+
+    "goal": "Explain the concept visually",
+
+    "diagramPriority": true,
+
+    "stepwiseVisualization": true,
+
+    "highlightCurrentPart": true,
+
+    "supportingObjects": true
+
+  },
+
+  "Observation": {
+
+    "goal": "Encourage students to observe carefully",
+
+    "zoomImportantObject": true,
+
+    "showLabels": true,
+
+    "highlightPatterns": true
+
+  },
+
+  "RealLifeConnection": {
+
+    "goal": "Connect concept to daily life",
+
+    "realEnvironment": true,
+
+    "realObjects": true,
+
+    "studentsParticipating": true
+
+  },
+
+  "Practice": {
+
+    "goal": "Prepare students for solving",
+
+    "questionVisible": true,
+
+    "studentsThinking": true,
+
+    "notebooksVisible": true
+
+  },
+
+  "Revision": {
+
+    "goal": "Revise quickly",
+
+    "icons": true,
+
+    "mindMapStyle": true,
+
+    "highlightKeywords": true
+
+  },
+
+  "Summary": {
+
+    "goal": "Summarize learning",
+
+    "cleanLayout": true,
+
+    "keyPointsOnly": true,
+
+    "simpleGraphics": true
+
+  },
+
+  "Motivation": {
+
+    "goal": "Encourage learning",
+
+    "happyStudents": true,
+
+    "teacherEncouraging": true,
+
+    "positiveEnvironment": true
+
+  }
+},
+"educationalDesignRules": {
+
+  "description": "Educational design principles for effective learning images.",
+
+  "visualHierarchy": true,
+
+  "largestObjectShouldBeMainConcept": true,
+
+  "highlightCurrentLearningPoint": true,
+
+  "keepImportantContentNearCenter": true,
+
+  "maintainBalancedLayout": true,
+
+  "avoidVisualClutter": true,
+
+  "useWhiteSpaceProperly": true,
+
+  "maintainReadableSpacing": true,
+
+  "showImportantLabelsClearly": true,
+
+  "labelsShouldNeverOverlap": true,
+
+  "highlightCurrentStepOnly": true,
+
+  "highlightCurrentFormulaOnly": true,
+
+  "highlightCurrentDiagramPart": true,
+
+  "highlightCurrentGraphPoint": true,
+
+  "maintainGoodContrast": true,
+
+  "backgroundShouldNotReduceReadability": true,
+
+  "avoidDarkEducationalImages": true,
+
+  "preferBrightLearningEnvironment": true,
+
+  "textShouldRemainReadable": true,
+
+  "importantObjectsShouldBeLargest": true,
+
+  "secondaryObjectsShouldSupportLearning": true,
+
+  "decorativeObjectsShouldBeMinimal": true,
+
+  "maintainVisualFlowLeftToRight": true,
+
+  "maintainEyeGuidance": true,
+
+  "supportSequentialLearning": true,
+
+  "conceptShouldBeUnderstoodWithoutNarration": true
+
+},
+"visualAppealRules": {
+
+  "description": "Rules for creating visually attractive educational illustrations.",
+
+  "highVisualImpact": true,
+
+  "professionalEducationalPoster": true,
+
+  "youtubeThumbnailQuality": true,
+
+  "brightColorHarmony": true,
+
+  "balancedColorPalette": true,
+
+  "avoidOversaturatedColors": true,
+
+  "highContrastForLearning": true,
+
+  "softNaturalLighting": true,
+
+  "consistentLightDirection": true,
+
+  "vibrantButReadable": true,
+
+  "cleanProfessionalLook": true,
+
+  "modernEducationalStyle": true,
+
+  "friendlyAtmosphere": true,
+
+  "positiveExpressions": true,
+
+  "clearFocusPoint": true,
+
+  "avoidVisualNoise": true,
+
+  "highDetailMainObjects": true,
+
+  "mediumDetailBackground": true,
+
+  "simpleForeground": true,
+
+  "readableTextPlacement": true,
+
+  "highlightImportantConcept": true,
+
+  "emotionallyEngaging": true,
+
+  "learningFirstDesign": true,
+
+  "maintainPremiumQuality": true,
+
+  "consistentArtStyle": true,
+
+  "avoidCheapCartoonLook": true,
+
+  "avoidPhotorealisticHumansForPrimaryClasses": true,
+
+  "visualAppealScoreTarget": 95
+
+},
+"textLayoutRules": {
+
+  "description": "Rules for placing educational text inside generated images.",
+
+  "alwaysShowHeading": true,
+
+  "alwaysShowDisplayText": true,
+
+  "headingShouldBeLargestText": true,
+
+  "displayTextShouldBeReadable": true,
+
+  "headingShouldMatchSceneTitle": true,
+
+  "displayTextShouldMatchNarration": true,
+
+  "maximumDisplayTextLines": 3,
+
+  "maximumHeadingLines": 2,
+
+  "avoidTextCropping": true,
+
+  "avoidTextOverflow": true,
+
+  "avoidTextOverlappingObjects": true,
+
+  "avoidTextOverlappingTeacher": true,
+
+  "avoidTextOverlappingStudents": true,
+
+  "avoidTextOverDiagram": true,
+
+  "preferTopHeading": true,
+
+  "preferBottomDisplayText": true,
+
+  "maintainSafeMargins": true,
+
+  "maintainReadableFontSize": true,
+
+  "maintainHighContrastText": true,
+
+  "autoAdjustTextPlacement": true,
+
+  "supportLargeScreens": true,
+
+  "supportMobileScreens": true,
+
+  "supportProjectorScreens": true,
+
+  "highlightKeywordsOnlyWhenNeeded": true,
+
+  "keepSentenceNatural": true,
+
+  "neverSplitWords": true
+
+},
+"sceneVariationRules": {
+
+  "description": "Rules to guarantee maximum variation between consecutive educational scenes.",
+
+  "changeBackgroundFrequently": true,
+
+  "changeTeacherPosition": true,
+
+  "changeStudentArrangement": true,
+
+  "changeLearningActivity": true,
+
+  "changeCameraAngle": true,
+
+  "changePerspective": true,
+
+  "changeLightingStyle": true,
+
+  "changeColorPalette": true,
+
+  "changeEducationalObjects": true,
+
+  "changeObjectPlacement": true,
+
+  "changeFocusObject": true,
+
+  "changeCharacterExpressions": true,
+
+  "changeTeacherGesture": true,
+
+  "changeStudentActions": true,
+
+  "changeEnvironmentWhenPossible": true,
+
+  "rotateIndoorOutdoorScenes": true,
+
+  "rotateLearningSpaces": [
+
+    "Classroom",
+
+    "Smart Classroom",
+
+    "Library",
+
+    "Math Lab",
+
+    "Science Lab",
+
+    "Computer Lab",
+
+    "School Garden",
+
+    "Playground",
+
+    "Activity Room",
+
+    "Outdoor Nature",
+
+    "Museum",
+
+    "Historical Site"
+
+  ],
+
+  "rotateTeacherPositions": [
+
+    "Left",
+
+    "Right",
+
+    "Center",
+
+    "Near Diagram",
+
+    "Near Students"
+
+  ],
+
+  "rotateStudentActivities": [
+
+    "Observing",
+
+    "Discussing",
+
+    "Writing",
+
+    "Drawing",
+
+    "Measuring",
+
+    "Experimenting",
+
+    "Reading",
+
+    "Solving",
+
+    "Presenting"
+
+  ],
+
+  "forceVisualDifferenceScore": 90,
+
+  "rejectHighlySimilarScene": true,
+
+  "autoRegenerateIfSimilarityDetected": true
+
+},
+"conceptVisualizationRules": {
+
+  "description": "Rules for converting abstract concepts into clear educational visuals.",
+
+  "alwaysVisualizeConcept": true,
+
+  "neverShowOnlyText": true,
+
+  "preferVisualLearning": true,
+
+  "convertAbstractToConcrete": true,
+
+  "showRelationshipsVisually": true,
+
+  "showCauseAndEffect": true,
+
+  "showStepByStepProgress": true,
+
+  "showGrowthPatterns": true,
+
+  "showComparisons": true,
+
+  "showClassification": true,
+
+  "showGrouping": true,
+
+  "showSequences": true,
+
+  "showBeforeAfter": true,
+
+  "showRealLifeApplication": true,
+
+  "showObservationFirst": true,
+
+  "showExplanationSecond": true,
+
+  "showConclusionLast": true,
+
+  "mathVisualization": {
+
+    "preferBlocks": true,
+
+    "preferDots": true,
+
+    "preferPatterns": true,
+
+    "preferColorCoding": true,
+
+    "preferNumberLines": true,
+
+    "preferStepHighlight": true
+
+  },
+
+  "scienceVisualization": {
+
+    "preferProcesses": true,
+
+    "preferLabels": true,
+
+    "preferArrows": true,
+
+    "preferLifeCycle": true,
+
+    "preferCrossSections": true
+
+  },
+
+  "historyVisualization": {
+
+    "preferTimeline": true,
+
+    "preferHistoricalScenes": true,
+
+    "preferMaps": true,
+
+    "preferComparisons": true
+
+  },
+
+  "geographyVisualization": {
+
+    "preferMaps": true,
+
+    "preferLandforms": true,
+
+    "preferDirectionArrows": true,
+
+    "preferSatelliteView": false
+
+  },
+
+  "languageVisualization": {
+
+    "preferCharacters": true,
+
+    "preferDialogues": true,
+
+    "preferStoryScenes": true
+
+  }
+
+},
+"subjectSpecificImageRules": {
+
+  "Mathematics": {
+  "focus": "Patterns, numbers, shapes and logical visualization",
+
+  "preferCleanBackground": true,
+  "highlightNumbers": true,
+  "highlightShapes": true,
+
+  "recreateTextbookDiagramExactly": true,
+  "accuracyMoreImportantThanBeauty": true,
+  "neverInventNewDiagram": true,
+  "neverChangeLayout": true,
+  "neverMoveObjects": true,
+  "neverChangeDotCount": true,
+  "neverAddExtraDots": true,
+  "neverRemoveDots": true,
+  "neverChangeGrouping": true,
+  "neverApproximateMathematics": true,
+  "preserveRowsAndColumns": true,
+  "preserveGeometricStructure": true,
+  "preserveRelativePositions": true,
+  "preserveDiagramScale": true,
+  "preserveLShapePatterns": true,
+  "preserveNumberPatterns": true,
+  "keepAllMathematicalRelationships": true,
+  "onlyImproveResolution": true,
+  "onlyImproveColors": true,
+  "onlyImproveReadability": true,
+  "doNotRedesignDiagram": true
+},
+
+  "Science": {
+    "focus": "Processes, experiments and observation",
+    "showLabels": true,
+    "showArrows": true,
+    "showScientificObjects": true
+  },
+
+  "SocialScience": {
+    "focus": "Maps, timelines and historical events",
+    "preferMaps": true,
+    "preferTimeline": true,
+    "preferHistoricalIllustrations": true
+  },
+
+  "English": {
+    "focus": "Characters, stories and conversations",
+    "showExpressions": true,
+    "showStoryEnvironment": true
+  },
+
+  "Hindi": {
+    "focus": "Language learning and literature",
+    "showCulture": true,
+    "showCharacters": true
+  },
+
+  "Computer": {
+    "focus": "Technology and programming",
+    "showDevices": true,
+    "showInterfaces": true,
+    "showCodeConcepts": true
+  }
+
+},
+"imageValidationRules": {
+
+  "validateConceptMatch": true,
+
+  "validateNarrationMatch": true,
+
+  "validateDisplayTextMatch": true,
+
+  "validateHeadingMatch": true,
+
+  "validateNoCropping": true,
+
+  "validateReadability": true,
+
+  "validateObjectVisibility": true,
+
+  "validateEducationalValue": true,
+
+  "validateVisualUniqueness": true,
+
+  "validateAspectRatio": true,
+
+  "validateImageQuality": true,
+
+  "validateTextVisibility": true,
+
+  "validateCharacterVisibility": true,
+
+  "allowAutomaticRegeneration": true,
+
+  "minimumQualityScore": 95
+
+}
+}

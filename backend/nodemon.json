@@ -1,0 +1,14 @@
+{
+  "watch": [
+    "server.js",
+    "routes",
+    "scripts"
+  ],
+  "ignore": [
+    "generated/**",
+    "uploads/**",
+    "pdfs/**",
+    "node_modules/**"
+  ],
+  "ext": "js,json"
+}

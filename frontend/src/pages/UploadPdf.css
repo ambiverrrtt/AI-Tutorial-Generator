@@ -1,0 +1,45 @@
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f4f4;
+}
+
+.upload-container{
+
+    width:500px;
+    margin:60px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+
+}
+
+.upload-container h1{
+
+    text-align:center;
+    margin-bottom:30px;
+
+}
+
+.upload-container form{
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+}
+
+.upload-container input{
+
+    padding:10px;
+    font-size:16px;
+
+}
+
+.upload-container button{
+
+    padding:12px;
+    font-size:16px;
+    cursor:pointer;
+}

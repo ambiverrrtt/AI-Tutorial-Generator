@@ -1,0 +1,1362 @@
+{
+  "version": "1.0.0",
+
+  "engine": "AI Teaching Engine",
+
+  "description": "Universal teaching rules for Class 1 to Class 12 educational tutorial generation.",
+
+  "supportedBoards": [
+    "NCERT",
+    "CBSE",
+    "State Board"
+  ],
+
+  "supportedLanguages": [
+    "English"
+  ],
+
+  "supportedClasses": [
+    "Class1",
+    "Class2",
+    "Class3",
+    "Class4",
+    "Class5",
+    "Class6",
+    "Class7",
+    "Class8",
+    "Class9",
+    "Class10",
+    "Class11",
+    "Class12"
+  ],
+
+  "globalRules": {
+
+  "neverSkipContent": true,
+
+  "targetVideoDuration": "3-4 Minutes",
+
+"oneSceneOneConcept": true,
+
+"oneImageOneConcept": true,
+
+"displayTextShort": true,
+
+"easyEnglishOnly": true,
+
+  "neverMergeDifferentConcepts": true,
+
+  "teachLikeHumanTeacher": true,
+
+  "followBookSequence": true,
+
+  "explainStepByStep": true,
+
+  "expandConcepts": true,
+
+  "neverSummarizeEntireTopic": true,
+
+  "focusOnUnderstanding": true,
+
+  "sceneBasedTeaching": true,
+
+  "generateUnlimitedScenes": true,
+
+  "sceneGenerationRule": "Generate as many scenes as required until every learning point is completely understood.",
+
+  "imageForEveryLearningPoint": true,
+
+  "oneLearningPointPerScene": true,
+
+  "narrationMatchesDisplayText": true,
+
+  "displayTextEasyToRead": true,
+
+  "imagePromptMatchesNarration": true,
+
+  "maintainTeachingFlow": true,
+
+  "maintainStudentInterest": true,
+
+  "neverRepeatSameVisual": true,
+
+  "visualDiversityRequired": true,
+
+  "useRealLifeExamplesWheneverPossible": true,
+
+  "introduceThenExplainThenExampleThenObserve": true,
+
+  "alwaysExplainDiagrams": true,
+
+  "alwaysExplainTables": true,
+
+  "alwaysExplainFigures": true,
+
+  "alwaysExplainActivities": true,
+
+  "alwaysExplainExamples": true,
+
+  "encourageThinking": true,
+
+  "encourageObservation": true,
+
+  "encourageCuriosity": true
+
+},
+
+"primaryRules": {
+
+  "appliesTo": [
+    "Class1",
+    "Class2",
+    "Class3",
+    "Class4",
+    "Class5"
+  ],
+
+  "ageGroup": "5-10 Years",
+
+  "learningStage": "Primary",
+
+  "languageLevel": "Very Easy",
+
+  "sentenceLength": "5-10 Words",
+
+  "vocabularyLevel": "Simple",
+
+  "teacherPersonality": "Friendly, Cheerful and Encouraging",
+
+  "narrationStyle": "Story Based Learning",
+
+  "voiceTone": "Soft, Warm and Happy",
+
+  "voiceSpeed": "Slow",
+
+  "conceptDepth": "Very Basic",
+
+  "realLifeExamples": "Very High",
+
+  "storytellingLevel": "Very High",
+
+  "curiosityLevel": "Very High",
+
+  "questionFrequency": "Every 60-90 Seconds",
+
+  "interactionLevel": "Very High",
+
+  "motivationFrequency": "Very High",
+
+  "revisionFrequency": "Every 2 Minutes",
+
+  "recapFrequency": "After Every Concept",
+
+  "memoryReinforcement": "Very High",
+
+  "attentionSpan": "Low",
+
+  "idealSceneDuration": "6-8 Seconds",
+
+  "minimumSceneDuration": "5 Seconds",
+
+  "maximumSceneDuration": "10 Seconds",
+
+  "idealTutorialDuration": "5-8 Minutes",
+
+  "maximumTutorialDuration": "10 Minutes",
+
+  "autoSplitTutorial": true,
+
+  "idealPartDuration": "5 Minutes",
+
+  "cartoonLevel": "Very High",
+
+  "animationLevel": "Very High",
+
+  "imageStyle": "Pixar Style Educational Illustration",
+
+  "visualDiversity": "Maximum",
+
+  "diagramComplexity": "Very Simple",
+
+  "equationAnimation": "Step By Step",
+
+  "imageTextSize": "Large",
+
+  "backgroundComplexity": "Simple and Colorful",
+
+  "humorLevel": "Medium",
+
+  "activityFrequency": "Very High",
+
+  "quizFrequency": "After Every Major Concept",
+
+  "summaryStyle": "Very Simple",
+
+  "difficultyProgression": "Easy → Easy",
+
+  "emojiFeeling": "High",
+
+  "encourageObservation": true,
+
+  "encouragePrediction": true,
+
+  "encourageThinking": true,
+
+  "encourageSpeaking": true,
+
+  "encourageCounting": true,
+
+  "encourageDrawing": true,
+
+  "useCharacters": true,
+
+  "useTeacherCharacter": true,
+
+  "useStudentCharacters": true,
+
+  "useFriendlyConversations": true,
+
+  "avoidLongParagraphs": true,
+
+  "avoidTechnicalWords": true,
+
+  "alwaysExplainWithVisuals": true,
+
+  "alwaysExplainWithExamples": true,
+
+  "alwaysUsePositiveLanguage": true,
+
+  "alwaysEndWithEncouragement": true
+
+},
+
+"teachingFlow": {
+
+  "description": "Standard teaching flow followed by the AI Teacher for every concept.",
+
+  "steps": [
+
+    {
+      "step": 1,
+      "name": "Introduction",
+      "purpose": "Introduce the new concept in a simple and interesting way."
+    },
+
+    {
+      "step": 2,
+      "name": "Observation",
+      "purpose": "Help students observe the concept before explaining it."
+    },
+
+    {
+      "step": 3,
+      "name": "Question",
+      "purpose": "Ask a curiosity-based question to increase attention."
+    },
+
+    {
+      "step": 4,
+      "name": "Explanation",
+      "purpose": "Explain the concept step by step."
+    },
+
+    {
+      "step": 5,
+      "name": "Diagram",
+      "purpose": "Explain every diagram, table or figure in detail."
+    },
+
+    {
+      "step": 6,
+      "name": "Example",
+      "purpose": "Explain using real-life or textbook examples."
+    },
+
+    {
+      "step": 7,
+      "name": "Visualization",
+      "purpose": "Convert difficult ideas into easy visuals."
+    },
+
+    {
+      "step": 8,
+      "name": "Practice",
+      "purpose": "Allow students to think or solve a small problem."
+    },
+
+    {
+      "step": 9,
+      "name": "Summary",
+      "purpose": "Give a short recap of the concept."
+    },
+
+    {
+      "step": 10,
+      "name": "Transition",
+      "purpose": "Smoothly connect to the next concept."
+    }
+
+  ]
+},
+
+"learningPointRules": {
+
+  "description": "Rules for identifying learning points and converting them into teaching scenes.",
+
+  "neverSkipLearningPoint": true,
+
+  "oneLearningPointOneScene": true,
+
+  "neverMergeDifferentLearningPoints": true,
+
+  "splitLongConceptsAutomatically": true,
+
+  "generateUnlimitedScenes": true,
+
+  "sceneCreationPriority": [
+
+    "New Concept",
+
+    "Definition",
+
+    "Important Sentence",
+
+    "Rule",
+
+    "Formula",
+
+    "Equation",
+
+    "Diagram",
+
+    "Table",
+
+    "Figure",
+
+    "Graph",
+
+    "Image",
+
+    "Observation",
+
+    "Example",
+
+    "Solved Example",
+
+    "Real Life Example",
+
+    "Activity",
+
+    "Think",
+
+    "Try This",
+
+    "Exercise",
+
+    "Fact",
+
+    "Important Note",
+
+    "Warning",
+
+    "Summary"
+
+  ],
+
+  "diagramExpansion": true,
+
+  "tableExpansion": true,
+
+  "graphExpansion": true,
+
+  "equationExpansion": true,
+
+  "formulaExpansion": true,
+
+  "stepByStepExplanation": true,
+
+  "sceneShouldTeachOnlyOneIdea": true,
+
+  "everyDiagramNeedsMultipleScenes": true,
+
+  "everyFormulaNeedsStepByStepScenes": true,
+
+  "everyExampleNeedsOwnScenes": true,
+
+  "everyActivityNeedsOwnScenes": true,
+
+  "everyObservationNeedsOwnScene": true,
+
+  "everyQuestionNeedsOwnScene": true,
+
+  "minimumScenesPerConcept": 1,
+
+  "maximumScenesPerConcept": -1,
+
+  "allowSceneExpansion": true
+
+},
+
+"visualTeachingRules": {
+
+  "description": "Rules for generating educational visuals for every learning point.",
+
+  "everySceneNeedsImage": true,
+
+  "everyImageMustTeach": true,
+
+  "imageShouldMatchNarration": true,
+
+  "imageShouldMatchDisplayText": true,
+
+  "maximumObjectsPerImage": 3,
+
+"oneConceptPerImage": true,
+
+"avoidSplitScreen": true,
+
+"avoidCollage": true,
+
+"avoidInfographic": true,
+
+"avoidParagraphText": true,
+
+"textShouldCoverLessThan15Percent": true,
+
+"preferSingleFocus": true,
+
+"preferLargeMainObject": true,
+
+"preferBrightColors": true,
+
+  "imageShouldBeSelfExplanatory": true,
+
+  "imageShouldBeUnique": true,
+
+  "neverReuseComposition": true,
+
+  "neverReuseBackground": true,
+
+  "neverReuseCameraAngle": true,
+
+  "neverReuseChildren": true,
+
+  "neverReuseTeacherPose": true,
+
+  "neverReuseObjectArrangement": true,
+
+  "neverGenerateDuplicateImage": true,
+
+  "showStepByStepGrowth": true,
+
+  "expandDiagramsIntoMultipleImages": true,
+
+  "expandTablesIntoMultipleImages": true,
+
+  "expandGraphsIntoMultipleImages": true,
+
+  "expandEquationsIntoMultipleImages": true,
+
+  "expandActivitiesIntoMultipleImages": true,
+
+  "expandExamplesIntoMultipleImages": true,
+
+  "highlightImportantPart": true,
+
+  "useVisualHierarchy": true,
+
+  "showProgressBetweenScenes": true,
+
+  "keepVisualContinuity": true,
+
+  "avoidInformationOverload": true,
+
+  "useEducationalObjects": true,
+
+  "preferConceptVisualization": true,
+
+  "preferRealLifeVisualization": true,
+
+  "minimumVisualChangesBetweenScenes": "High",
+
+  "maximumVisualCreativity": true,
+
+  "allowCreativeIllustrations": true,
+
+  "allowConceptCharacters": true,
+
+  "allowFriendlyTeacher": true,
+
+  "allowStudentInteraction": true,
+
+  "allowEmotionExpressions": true,
+
+  "visualQuality": "Very High",
+
+  "preferredAspectRatio": "16:9",
+
+  "preferredResolution": "High"
+
+},
+
+"middleRules": {
+
+  "appliesTo": [
+    "Class6",
+    "Class7",
+    "Class8"
+  ],
+
+  "ageGroup": "11-14 Years",
+
+  "sentenceLength": "8-12 Words",
+
+"idealSceneDuration": "2-4 Seconds",
+
+"minimumSceneDuration": "2 Seconds",
+
+"maximumSceneDuration": "4 Seconds",
+
+"idealTutorialDuration": "3-4 Minutes",
+
+"maximumTutorialDuration": "4 Minutes",
+
+"imageStyle": "Pixar Style Educational Illustration",
+
+"displayTextMaximumWords": 8,
+
+"headingMaximumWords": 3,
+
+"oneConceptPerScene": true,
+
+"maximumObjectsPerImage": 3,
+
+"avoidParagraphOnImage": true,
+
+"preferColorfulIllustration": true,
+
+"preferHappyChildren": true,
+
+  "learningStage": "Middle School",
+
+  "languageLevel": "Easy",
+
+  "vocabularyLevel": "Moderate",
+
+  "teacherPersonality": "Friendly, Confident and Motivating",
+
+  "narrationStyle": "Concept Based Teaching",
+
+  "voiceTone": "Natural and Energetic",
+
+  "voiceSpeed": "Normal",
+
+  "conceptDepth": "Detailed",
+
+  "realLifeExamples": "High",
+
+  "storytellingLevel": "Medium",
+
+  "curiosityLevel": "High",
+
+  "questionFrequency": "Every 90 Seconds",
+
+  "interactionLevel": "High",
+
+  "motivationFrequency": "High",
+
+  "revisionFrequency": "Every Concept",
+
+  "recapFrequency": "After Every Major Concept",
+
+  "memoryReinforcement": "High",
+
+  "attentionSpan": "Medium",
+
+  "autoSplitTutorial": true,
+
+  "idealPartDuration": "8 Minutes",
+
+  "cartoonLevel": "Medium",
+
+  "animationLevel": "High",
+
+  "visualDiversity": "Maximum",
+
+  "diagramComplexity": "Medium",
+
+  "equationAnimation": "Step By Step",
+
+  "imageTextSize": "Large",
+
+  "backgroundComplexity": "Moderate",
+
+  "humorLevel": "Low",
+
+  "activityFrequency": "High",
+
+  "quizFrequency": "After Every Major Concept",
+
+  "summaryStyle": "Concept Summary",
+
+  "difficultyProgression": "Easy → Medium → Advanced",
+
+  "encourageObservation": true,
+
+  "encouragePrediction": true,
+
+  "encourageThinking": true,
+
+  "encourageDiscussion": true,
+
+  "encourageProblemSolving": true,
+
+  "alwaysExplainDiagrams": true,
+
+  "alwaysExplainTables": true,
+
+  "alwaysExplainExamples": true,
+
+  "alwaysConnectConcepts": true,
+
+  "alwaysUseVisualLearning": true,
+
+  "alwaysEndWithRecap": true
+
+},
+
+"secondaryRules": {
+
+  "appliesTo": [
+    "Class9",
+    "Class10"
+  ],
+
+  "ageGroup": "14-16 Years",
+
+  "learningStage": "Secondary",
+
+  "languageLevel": "Moderate",
+
+  "sentenceLength": "15-25 Words",
+
+  "vocabularyLevel": "Intermediate",
+
+  "teacherPersonality": "Professional, Friendly and Motivating",
+
+  "narrationStyle": "Concept + Exam Oriented",
+
+  "voiceTone": "Confident",
+
+  "voiceSpeed": "Normal",
+
+  "conceptDepth": "High",
+
+  "realLifeExamples": "Medium",
+
+  "storytellingLevel": "Low",
+
+  "curiosityLevel": "Medium",
+
+  "questionFrequency": "Every Major Concept",
+
+  "interactionLevel": "Medium",
+
+  "motivationFrequency": "Medium",
+
+  "revisionFrequency": "After Every Topic",
+
+  "recapFrequency": "Every Major Concept",
+
+  "memoryReinforcement": "High",
+
+  "attentionSpan": "Medium",
+
+  "idealSceneDuration": "10-15 Seconds",
+
+  "minimumSceneDuration": "8 Seconds",
+
+  "maximumSceneDuration": "18 Seconds",
+
+  "idealTutorialDuration": "10-12 Minutes",
+
+  "maximumTutorialDuration": "20 Minutes",
+
+  "autoSplitTutorial": true,
+
+  "idealPartDuration": "10 Minutes",
+
+  "cartoonLevel": "Low",
+
+  "animationLevel": "Medium",
+
+  "imageStyle": "Educational Semi-Realistic Illustration",
+
+  "visualDiversity": "Maximum",
+
+  "diagramComplexity": "High",
+
+  "equationAnimation": "Detailed Step By Step",
+
+  "imageTextSize": "Medium",
+
+  "backgroundComplexity": "Detailed",
+
+  "humorLevel": "Very Low",
+
+  "activityFrequency": "Medium",
+
+  "quizFrequency": "After Every Topic",
+
+  "summaryStyle": "Exam Revision Summary",
+
+  "difficultyProgression": "Easy → Medium → Hard",
+
+  "encourageObservation": true,
+
+  "encouragePrediction": true,
+
+  "encourageThinking": true,
+
+  "encourageDiscussion": true,
+
+  "encourageProblemSolving": true,
+
+  "alwaysExplainFormula": true,
+
+  "alwaysExplainDerivation": true,
+
+  "alwaysExplainDiagram": true,
+
+  "alwaysExplainGraph": true,
+
+  "alwaysExplainExamples": true,
+
+  "alwaysConnectPreviousConcepts": true,
+
+  "alwaysEndWithExamTips": true
+
+},
+
+"studentPsychologyRules": {
+
+  "description": "Rules to keep students engaged, curious and motivated throughout the tutorial.",
+
+  "keepAttentionAlways": true,
+
+  "changeImageEveryScene": true,
+
+"avoidLongDisplayText": true,
+
+"avoidComplexVocabulary": true,
+
+"preferSmallLearningSteps": true,
+
+"keepCuriosityHigh": true,
+
+  "neverAllowBoringExplanation": true,
+
+  "changeVisualFrequently": true,
+
+  "changeTeachingStyleWhenNeeded": true,
+
+  "avoidLongMonologues": true,
+
+  "breakLongConceptsIntoSmallIdeas": true,
+
+  "showOneIdeaAtATime": true,
+
+  "maintainCuriosity": true,
+
+  "maintainExcitement": true,
+
+  "maintainLearningMomentum": true,
+
+  "neverOverloadStudent": true,
+
+  "neverRushConcept": true,
+
+  "alwaysBuildCuriosityBeforeExplanation": true,
+
+  "alwaysGiveObservationTime": true,
+
+  "alwaysPauseBeforeImportantConcept": true,
+
+  "alwaysHighlightImportantInformation": true,
+
+  "alwaysCelebrateSmallAchievements": true,
+
+  "alwaysEncourageThinking": true,
+
+  "alwaysEncouragePrediction": true,
+
+  "alwaysEncourageObservation": true,
+
+  "alwaysEncourageParticipation": true,
+
+  "useSimpleQuestionsFrequently": true,
+
+  "useRealLifeConnections": true,
+
+  "useVisualSurprises": true,
+
+  "avoidRepeatingSameSentenceStyle": true,
+
+  "avoidRepeatingSameVisualStyle": true,
+
+  "avoidRepeatingSameExampleType": true,
+
+  "switchBetweenExplanationAndVisuals": true,
+
+  "switchBetweenTeacherAndConcept": true,
+
+  "endEveryMajorConceptWithMotivation": true,
+
+  "prepareStudentForNextConcept": true,
+
+  "createSmoothTransitions": true,
+
+  "keepLearningFun": true,
+
+  "neverReduceConceptQualityForShortVideos": true,
+
+  "splitLongTutorialAutomatically": true,
+
+  "preferredEndingStyle": "Create curiosity for the next part instead of giving a complete ending."
+
+},
+
+"bookContentRules": {
+
+  "description": "Rules for understanding and expanding textbook content.",
+
+  "readEntireSectionBeforeTeaching": true,
+
+  "neverTeachOutsideSelectedSection": true,
+
+  "neverSkipParagraph": true,
+
+  "neverSkipSentence": true,
+
+  "neverSkipImportantWord": true,
+
+  "neverSkipDefinitions": true,
+
+  "neverSkipExamples": true,
+
+  "neverSkipSolvedExamples": true,
+
+  "neverSkipActivities": true,
+
+  "neverSkipExercises": false,
+
+  "neverSkipFigures": true,
+
+  "neverSkipDiagrams": true,
+
+  "neverSkipTables": true,
+
+  "neverSkipCharts": true,
+
+  "neverSkipGraphs": true,
+
+  "neverSkipMaps": true,
+
+  "neverSkipTimelines": true,
+
+  "neverSkipFlowcharts": true,
+
+  "neverSkipImageCaptions": true,
+
+  "neverSkipImportantNotes": true,
+
+  "neverSkipDidYouKnowBoxes": true,
+
+  "neverSkipObservationBoxes": true,
+
+  "expandShortParagraphs": true,
+
+  "expandCompressedConcepts": true,
+
+  "expandEveryDiagram": true,
+
+  "expandEveryTable": true,
+
+  "expandEveryExample": true,
+
+  "expandEveryActivity": true,
+
+  "expandEveryFormula": true,
+
+  "expandEveryEquation": true,
+
+  "connectRelatedConceptsWithinSection": true,
+
+  "preserveOriginalMeaning": true,
+
+  "followBookOrderStrictly": true,
+
+  "useOnlyBookContent": true,
+
+  "doNotInventFacts": true,
+
+  "allowTeachingExpansion": true
+
+},
+
+"scenePlanningRules": {
+
+  "description": "Rules for converting textbook content into teaching scenes.",
+
+  "scenePlanningMode": "Dynamic",
+
+  "neverUseFixedSceneCount": true,
+
+  "generateScenesUntilConceptIsUnderstood": true,
+
+  "targetTutorialDuration": "3-4 Minutes",
+
+"preferMoreScenes": true,
+
+"sceneTargetDuration": "3 Seconds",
+
+"neverCombineMultipleExamples": true,
+
+"neverCombineMultipleDefinitions": true,
+
+"neverCombineDifferentDiagrams": true,
+
+  "minimumScenesPerLearningPoint": 1,
+
+  "maximumScenesPerLearningPoint": -1,
+
+  "allowUnlimitedScenes": true,
+
+  "everyConceptNeedsIntroduction": true,
+
+  "everyConceptNeedsExplanation": true,
+
+  "everyConceptNeedsVisualization": true,
+
+  "everyConceptNeedsExample": true,
+
+  "everyConceptNeedsObservation": true,
+
+  "everyConceptNeedsSummary": true,
+
+  "everyConceptNeedsTransition": true,
+
+  "splitLargeParagraphAutomatically": true,
+
+  "splitLargeDiagramAutomatically": true,
+
+  "splitFormulaExplanationAutomatically": true,
+
+  "splitEquationStepAutomatically": true,
+
+  "splitActivityAutomatically": true,
+
+  "splitTableAutomatically": true,
+
+  "splitGraphAutomatically": true,
+
+  "splitTimelineAutomatically": true,
+
+  "splitMapAutomatically": true,
+
+  "preferShortScenes": true,
+
+  "preferSingleConceptScenes": true,
+
+  "avoidMultiConceptScenes": true,
+
+  "allowSceneExpansion": true,
+
+  "allowVisualExpansion": true,
+
+  "allowNarrationExpansion": true,
+
+  "sceneEndingStyle": "Create curiosity for the next scene.",
+
+  "partEndingStyle": "Create curiosity for the next tutorial part.",
+
+  "tutorialEndingStyle": "Summarize and motivate students for the next topic."
+
+},
+
+"teachingDecisionRules": {
+
+  "description": "AI decision rules for selecting the best teaching strategy based on the detected content type.",
+
+  "detectContentTypeAutomatically": true,
+
+  "supportedContentTypes": [
+
+    "Introduction",
+
+    "Definition",
+
+    "Concept",
+
+    "Rule",
+
+    "Fact",
+
+    "Example",
+
+    "Solved Example",
+
+    "Real Life Example",
+
+    "Diagram",
+
+    "Image",
+
+    "Flowchart",
+
+    "Table",
+
+    "Chart",
+
+    "Graph",
+
+    "Equation",
+
+    "Formula",
+
+    "Proof",
+
+    "Activity",
+
+    "Experiment",
+
+    "Observation",
+
+    "Map",
+
+    "Timeline",
+
+    "Case Study",
+
+    "Story",
+
+    "Conversation",
+
+    "Poem",
+
+    "Exercise",
+
+    "Summary"
+
+  ],
+
+  "definitionStrategy": "Explain -> Show Visual -> Give Example",
+
+  "conceptStrategy": "Introduce -> Explain -> Visualize -> Example -> Summary",
+
+  "ruleStrategy": "State Rule -> Explain Rule -> Show Application",
+
+  "formulaStrategy": "Explain Variables -> Explain Formula -> Solve Example",
+
+  "equationStrategy": "Solve Step By Step",
+
+  "diagramStrategy": "Observe -> Explain Parts -> Explain Relationship -> Summary",
+
+  "graphStrategy": "Read Graph -> Explain Trend -> Conclusion",
+
+  "tableStrategy": "Read Table -> Compare Values -> Explain Pattern",
+
+  "mapStrategy": "Locate -> Observe -> Explain",
+
+  "timelineStrategy": "Chronological Explanation",
+
+  "experimentStrategy": "Objective -> Materials -> Steps -> Observation -> Result",
+
+  "storyStrategy": "Narrate -> Explain Moral -> Connect Concept",
+
+  "activityStrategy": "Explain -> Perform -> Observe -> Learn",
+
+  "exerciseStrategy": "Explain Question -> Solve -> Verify Answer",
+
+  "summaryStrategy": "Key Points -> Motivation -> Next Topic"
+
+},
+
+"seniorSecondaryRules": {
+
+  "appliesTo": [
+    "Class11",
+    "Class12"
+  ],
+
+  "ageGroup": "16-18 Years",
+
+  "learningStage": "Senior Secondary",
+
+  "languageLevel": "Advanced",
+
+  "sentenceLength": "18-30 Words",
+
+  "vocabularyLevel": "Advanced",
+
+  "teacherPersonality": "Professional, Confident and Inspiring",
+
+  "narrationStyle": "Deep Conceptual Teaching",
+
+  "voiceTone": "Professional",
+
+  "voiceSpeed": "Normal",
+
+  "conceptDepth": "Very High",
+
+  "realLifeExamples": "Medium",
+
+  "storytellingLevel": "Low",
+
+  "curiosityLevel": "Medium",
+
+  "questionFrequency": "After Every Major Concept",
+
+  "interactionLevel": "Medium",
+
+  "motivationFrequency": "Medium",
+
+  "revisionFrequency": "End of Every Major Concept",
+
+  "recapFrequency": "Topic Wise",
+
+  "memoryReinforcement": "Medium",
+
+  "attentionSpan": "High",
+
+  "idealSceneDuration": "12-18 Seconds",
+
+  "minimumSceneDuration": "10 Seconds",
+
+  "maximumSceneDuration": "20 Seconds",
+
+  "idealTutorialDuration": "15-20 Minutes",
+
+  "maximumTutorialDuration": "30 Minutes",
+
+  "autoSplitTutorial": true,
+
+  "idealPartDuration": "12 Minutes",
+
+  "cartoonLevel": "None",
+
+  "animationLevel": "Medium",
+
+  "imageStyle": "Professional Educational Illustration",
+
+  "visualDiversity": "Maximum",
+
+  "diagramComplexity": "Very High",
+
+  "equationAnimation": "Detailed",
+
+  "imageTextSize": "Medium",
+
+  "backgroundComplexity": "Detailed",
+
+  "activityFrequency": "Medium",
+
+  "quizFrequency": "After Every Major Concept",
+
+  "summaryStyle": "Exam Oriented Revision",
+
+  "difficultyProgression": "Basic → Intermediate → Advanced",
+
+  "alwaysExplainDerivations": true,
+
+  "alwaysExplainProofs": true,
+
+  "alwaysExplainApplications": true,
+
+  "alwaysConnectConcepts": true,
+
+  "alwaysRelatePreviousKnowledge": true,
+
+  "alwaysEndWithExamPerspective": true
+
+},
+
+"sceneQualityRules": {
+
+  "description": "Quality validation rules for every generated scene.",
+
+  "everySceneMustHaveHeading": true,
+
+  "everySceneMustHaveDisplayText": true,
+
+  "everySceneMustHaveNarration": true,
+
+  "everySceneMustHaveImagePrompt": true,
+
+  "headingShouldMatchConcept": true,
+
+  "displayTextShouldMatchNarration": true,
+
+  "imagePromptShouldMatchNarration": true,
+
+  "imagePromptShouldMatchDisplayText": true,
+
+  "narrationShouldExplainOnlyOneConcept": true,
+
+  "displayTextShouldContainOnlyKeyIdea": true,
+
+  "displayTextMaximumWords": 8,
+
+"displayTextMinimumWords": 3,
+
+"displayTextOneSentenceOnly": true,
+
+"headingMaximumWords": 3,
+
+"headingMinimumWords": 1,
+
+"narrationMinimumWords": 5,
+
+"narrationMaximumWords": 12,
+
+"sceneTargetDurationSeconds": 3,
+
+  "avoidVeryLongDisplayText": true,
+
+  "avoidVeryShortNarration": true,
+
+  "avoidRepeatedHeading": true,
+
+  "avoidRepeatedDisplayText": true,
+
+  "avoidRepeatedNarration": true,
+
+  "avoidRepeatedImagePrompt": true,
+
+  "everySceneShouldTeachSomethingNew": true,
+
+  "everySceneShouldHaveUniqueVisualIdentity": true,
+
+  "everySceneShouldBeUnderstandableWithoutPreviousScene": false,
+
+  "everySceneShouldNaturallyConnectToPreviousScene": true,
+
+  "everySceneShouldLeadToNextScene": true,
+
+  "allowConceptExpansion": true,
+
+  "rejectLowQualityScene": true,
+
+  "rejectDuplicateScene": true,
+
+  "rejectEmptyNarration": true,
+
+  "rejectGenericImagePrompt": true,
+
+  "rejectUnclearDisplayText": true
+
+},
+
+"teachingValidationRules": {
+
+  "description": "Final validation before accepting the generated tutorial.",
+
+  "validateTeachingSequence": true,
+
+  "validateConceptCoverage": true,
+
+  "validateSceneOrder": true,
+
+  "validateImageFlow": true,
+
+  "validateNarrationFlow": true,
+
+  "validateDisplayTextFlow": true,
+
+  "validateDifficultyProgression": true,
+
+  "validateStudentUnderstanding": true,
+
+  "validateVisualContinuity": true,
+
+  "validateTeachingCompleteness": true,
+
+  "validateNoMissingLearningPoint": true,
+
+  "validateDiagramCoverage": true,
+
+  "validateExampleCoverage": true,
+
+  "validateFormulaCoverage": true,
+
+  "validateActivityCoverage": true,
+
+  "validateSummaryCoverage": true,
+
+  "allowRegenerationIfValidationFails": true
+
+},
+
+"futureExtensions": {
+
+  "interactiveQuiz": true,
+
+  "worksheetGeneration": true,
+
+  "homeworkGeneration": true,
+
+  "practiceQuestions": true,
+
+  "revisionMode": true,
+
+  "examPreparationMode": true,
+
+  "doubtSolver": true,
+
+  "multiLanguageSupport": true,
+
+  "teacherDashboard": true,
+
+  "studentProgressTracking": true,
+
+  "adaptiveLearning": true,
+
+  "difficultyAdjustment": true,
+
+  "voiceSelection": true,
+
+  "animationEngine": true,
+
+  "virtualTeacher": true
+
+},
+
+  "classes": {
+
+    "Class1": {},
+
+    "Class2": {},
+
+    "Class3": {},
+
+    "Class4": {},
+
+    "Class5": {},
+
+    "Class6": {},
+
+    "Class7": {},
+
+    "Class8": {},
+
+    "Class9": {},
+
+    "Class10": {},
+
+    "Class11": {},
+
+    "Class12": {}
+
+  }
+
+}

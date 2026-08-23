@@ -1,0 +1,401 @@
+{
+    "version": "1.0.0",
+    "engine": "AI Narration Engine",
+    "description": "Universal narration rules for Class 1 to Class 12 educational tutorials.",
+    "supportedBoards": [
+        "NCERT",
+        "CBSE",
+        "State Board"
+    ],
+    "supportedLanguages": [
+        "English"
+    ],
+    "supportedClasses": [
+        "Class1",
+        "Class2",
+        "Class3",
+        "Class4",
+        "Class5",
+        "Class6",
+        "Class7",
+        "Class8",
+        "Class9",
+        "Class10",
+        "Class11",
+        "Class12"
+    ],
+
+"globalNarrationRules": {
+    "description": "Universal narration rules followed for every tutorial.",
+    "followBookSequence": true,
+    "neverSkipContent": true,
+    "neverInventFacts": true,
+    "neverTeachOutsideSection": true,
+    "teachLikeExperiencedTeacher": true,
+    "speakNaturally": true,
+    "avoidRoboticLanguage": true,
+    "avoidRepeatingSentences": true,
+    "avoidUnnecessaryGreetings": true,
+    "avoidLongIntroduction": true,
+    "avoidLongConclusion": true,
+    "oneLearningPointPerScene": true,
+    "oneConceptPerNarration": true,
+    "sceneShouldFlowNaturally": true,
+    "connectPreviousScene": false,
+    "prepareNextScene": false,
+    "encourageThinking": true,
+    "encourageObservation": true,
+    "encourageCuriosity": true,
+    "maintainStudentInterest": true,
+    "maintainTeachingFlow": true,
+    "maintainBookOrder": true,
+    "expandBookConcepts": true,
+    "neverReduceLearningQuality": true,
+    "ttsFriendly": true,
+    "easyToUnderstand": true,
+    "clearPronunciationWords": true
+},
+"sceneNarrationStructure": {
+    "description": "Standard narration structure for every teaching scene.",
+    "sceneFlow": [
+        
+        "Observation",
+        "Explanation"
+       
+    ],
+    "useHookWhenNeeded": true,
+    "hookShouldCreateCuriosity": true,
+    "observationShouldComeBeforeExplanation": true,
+    "explanationShouldBeStepByStep": true,
+    "visualizationShouldMatchImage": true,
+    "exampleShouldBeSimple": true,
+    "miniConclusionShouldReinforceConcept": true,
+    "transitionShouldLeadToNextScene": false,
+    "avoidAbruptSceneEnding": true,
+    "avoidInformationDump": true,
+    "keepSceneFocused": true,
+    "oneMainIdeaPerScene": true,
+    "maintainNaturalConversation": true
+},
+
+"languageRules": {
+    "description": "Rules for narration language and writing style.",
+    "useSimpleEnglish": true,
+    "classWiseLanguage": {
+
+    "Class1-Class2": "Very Simple",
+
+    "Class3-Class5": "Simple",
+
+    "Class6-Class8": "Easy",
+
+    "Class9-Class10": "Standard",
+
+    "Class11-Class12": "Advanced"
+
+},
+
+"headingRules": {
+
+    "maximumWords": 3,
+
+    "minimumWords": 1,
+
+    "avoidColon": true,
+
+    "avoidLongTitles": true
+
+},
+"imagePromptRules": {
+
+    "oneConceptOnly": true,
+
+    "maximumObjects": 3,
+
+    "avoidCollage": true,
+
+    "avoidSplitScreen": true,
+
+    "avoidInfographic": true,
+
+    "avoidParagraphText": true,
+
+    "preferCartoonForMiddleSchool": true,
+
+    "matchStudentAge": true
+
+},
+
+"narrationLengthRules": {
+
+    "minimumWordsPerScene": 5,
+
+    "maximumWordsPerScene": 12,
+
+    "targetSceneDuration": "2-4 Seconds"
+
+},
+
+"displayTextRules": {
+
+    "maximumWords": 8,
+
+    "minimumWords": 3,
+
+    "oneSentenceOnly": true,
+
+    "noParagraph": true,
+
+    "noPunctuationList": true,
+
+    "easyToRead": true,
+
+    "largePosterFriendly": true
+
+},
+
+"avoidDifficultVocabulary": true,
+
+"avoidLongWords": true,
+
+"avoidAcademicWriting": true,
+
+"writeLikeTeacherSpeaking": true,
+
+"preferConversationStyle": true,
+    "useNaturalEnglish": true,
+    "avoidComplexGrammar": true,
+    "avoidPassiveVoiceWhenPossible": true,
+    "preferActiveVoice": true,
+"maximumSentenceLength": 12,
+    "useEasyVocabulary": true,
+    "avoidUnnecessaryTechnicalWords": true,
+    "defineTechnicalWordsWhenNeeded": true,
+    "avoidLongParagraphs": true,
+    "maintainFriendlyTone": true,
+    "maintainProfessionalTone": true,
+    "avoidRoboticStyle": true,
+    "avoidRepeatedSentencePatterns": true,
+    "useNaturalTransitions": true,
+    "usePositiveLanguage": true,
+    "suitableForTextToSpeech": true
+},
+"sceneSplittingRules": {
+    "description": "Rules for splitting textbook content into teaching scenes.",
+    "splitByLearningPoint": true,
+    "splitByConcept": true,
+    "splitByDefinition": true,
+    "splitByRule": true,
+    "splitByFormula": true,
+    "splitByEquation": true,
+    "splitByDiagram": true,
+    "splitByGraph": true,
+    "splitByTable": true,
+    "splitByTimeline": true,
+    "splitByMap": true,
+    "splitByExample": true,
+    "splitBySolvedExample": true,
+    "splitByActivity": true,
+    "splitByObservation": true,
+    "splitByImportantFact": true,
+    "splitByQuestion": true,
+    "splitByImage": true,
+    "splitLongParagraphAutomatically": true,
+    "expandCompressedParagraph": true,
+    "neverMergeDifferentConcepts": true,
+    "oneSceneOneLearningPoint": true,
+   "targetVideoDuration": "3-4 Minutes",
+
+"classWiseSceneCount": {
+    "Class1-Class2": "40-60",
+    "Class3-Class5": "60-70",
+    "Class6-Class8": "60-80",
+    "Class9-Class10": "80-100",
+    "Class11-Class12": "100-150"
+},
+
+"expandParagraphIntoMultipleScenes": true,
+
+"neverMergeExamples": true,
+
+"oneExamplePerScene": true,
+
+"oneDefinitionPerScene": true,
+
+"oneDiagramPerScene": true,
+
+"oneImagePerScene": true,
+
+"oneLearningObjectivePerScene": true,
+
+"preferMoreScenesInsteadOfLongScenes": true,
+"sceneEndingShouldCreateCuriosity": true
+},
+"explanationRules": {
+    "description": "Rules for explaining concepts clearly.",
+    "explainStepByStep": true,
+    "neverAssumePriorKnowledge": true,
+    "defineBeforeExplaining": true,
+    "explainWhy": true,
+    "explainHow": true,
+    "explainWhereUsed": true,
+    "connectToRealLife": true,
+    "connectToPreviousConcept": true,
+    "useEasyExamples": true,
+    "avoidMemorizationStyle": true,
+    "encourageUnderstanding": true,
+    "highlightImportantIdea": true,
+    "repeatOnlyWhenNecessary": true,
+    "avoidUnnecessaryDetails": true,
+    "maintainConceptFlow": true
+},
+"subjectNarrationRules": {
+    "Mathematics": {
+        "teachingMode": "Observation -> Pattern -> Rule -> Example -> Practice",
+        "focus": "Logical Thinking",
+        "encourageMentalCalculation": true,
+        "stepByStepReasoning": true,
+        "alwaysVisualizeNumbers": true,
+        "alwaysExplainPatterns": true,
+        "alwaysExplainWhyFormulaWorks": true
+    },
+    "Science": {
+        "teachingMode": "Observation -> Experiment -> Explanation -> Conclusion",
+        "focus": "Scientific Thinking",
+        "encourageObservation": true,
+        "encouragePrediction": true,
+        "alwaysExplainProcess": true,
+        "alwaysExplainCauseEffect": true,
+        "alwaysConnectToNature": true
+    },
+    "SocialScience": {
+        "teachingMode": "Introduction -> Background -> Explanation -> Impact -> Summary",
+        "focus": "Understanding Society",
+        "alwaysExplainReason": true,
+        "alwaysExplainEffect": true,
+        "alwaysUseTimeline": true,
+        "alwaysConnectEvents": true
+    },
+    "English": {
+        "teachingMode": "Story -> Characters -> Meaning -> Language -> Moral",
+        "focus": "Communication",
+        "alwaysExplainVocabulary": true,
+        "alwaysExplainCharacters": true,
+        "alwaysExplainMoral": true
+    },
+    "Hindi": {
+        "teachingMode": "Reading -> Meaning -> Vocabulary -> Emotion -> Summary",
+        "focus": "Language Understanding",
+        "alwaysExplainDifficultWords": true,
+        "alwaysExplainEmotion": true,
+        "alwaysExplainContext": true
+    },
+    "Computer": {
+        "teachingMode": "Concept -> Working -> Example -> Practical Use",
+        "focus": "Practical Understanding",
+        "alwaysExplainWorkflow": true,
+        "alwaysExplainApplications": true,
+        "alwaysRelateToRealSoftware": true
+    }
+},
+"questionGenerationRules": {
+    "description": "Rules for generating curiosity and thinking questions.",
+    "askObservationQuestions": true,
+    "askPredictionQuestions": true,
+    "askThinkingQuestions": true,
+    "avoidVeryDifficultQuestions": true,
+    "avoidTooManyQuestions": true,
+    "questionShouldMatchAge": true,
+    "questionShouldMatchCurrentConcept": true,
+    "preferOpenEndedQuestions": true,
+    "encourageSelfThinking": true,
+    "placeQuestionBeforeExplanation": true,
+    "maximumQuestionsPerScene": 1
+},
+"voiceRhythmRules": {
+    "description": "Rules for making narration sound like a real teacher.",
+    "naturalSpeakingStyle": true,
+    "ttsFriendly": true,
+    "avoidTongueTwisters": true,
+    "avoidLongBreathSentences": true,
+    "preferShortNaturalSentences": true,
+    "useConversationStyle": true,
+    "useNaturalPauses": true,
+    "pauseAfterQuestion": true,
+    "pauseBeforeImportantIdea": true,
+    "pauseAfterImportantIdea": true,
+    "emphasizeKeywords": true,
+    "varySentenceLength": true,
+    "avoidMonotony": true,
+    "avoidRepeatingSentenceStructure": true,
+    "maintainSmoothFlow": true,
+    "maintainFriendlyTeacherTone": true,
+    "maintainConfidence": true,
+    "soundLikeExperiencedTeacher": true,
+    "avoidArtificialExcitement": true,
+    "avoidTooManyExclamationMarks": true,
+    "readingSpeed": "Fast",
+    "emotionLevel": "Balanced",
+    "curiosityMoments": true
+},
+"transitionRules": {
+    "description": "Rules for connecting one scene to the next.",
+    "alwaysConnectScenes": false,
+    "avoidAbruptTransitions": true,
+    "prepareStudentForNextScene": false,
+    "useNaturalTransitions": true,
+    "neverJumpBetweenConcepts": true,
+    "connectWithPreviousLearning": true,
+    "maintainStoryLikeFlow": false,
+    "buildCuriosity": true,
+    "transitionStyles": [
+        "Now let's understand this.",
+        "Let's observe this carefully.",
+        "Now look at the next pattern.",
+        "Let's see what happens next.",
+        "Now let's understand why this happens.",
+        "Can you notice something interesting?",
+        "Let's explore this idea further."
+    ]
+},
+"narrationValidationRules": {
+    "description": "Final validation rules before accepting generated narration.",
+    "validateBookSequence": true,
+    "validateConceptCoverage": true,
+    "validateNoSkippedContent": true,
+    "validateOneLearningPointPerScene": true,
+    "validateSceneFlow": true,
+    "validateHeadingMatch": true,
+    "validateDisplayTextMatch": true,
+    "validateImagePromptMatch": true,
+    "validateNarrationLength": true,
+    "validateLanguageLevel": true,
+    "validateGrammar": true,
+    "validateNaturalEnglish": true,
+    "validateTTSFriendly": true,
+    "validateStudentUnderstanding": true,
+    "validateTransitions": true,
+    "validateNoRepeatedSentences": true,
+    "validateCuriosityFlow": true,
+    "validateRealLifeExamples": true,
+    "validateQuestionPlacement": true,
+    "allowAutomaticRewrite": true,
+    "minimumNarrationQualityScore": 95
+},
+"futureExtensions": {
+    "multiLanguageNarration": true,
+    "teacherVoiceProfiles": true,
+    "emotionBasedNarration": true,
+    "adaptiveDifficulty": true,
+    "interactiveQuestions": true,
+    "revisionMode": true,
+    "examMode": true,
+    "storyMode": true,
+    "conversationMode": true,
+    "voiceSpeedControl": true,
+    "pauseOptimization": true,
+    "autoSummarization": true,
+    "automaticRevisionGeneration": true
+}
+
+}

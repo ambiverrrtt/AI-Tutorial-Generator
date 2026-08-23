@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# Python virtual environment
+.venv/
+venv/
+
+# Generated / uploaded files
+uploads/
+generated/
+
+# Logs
+*.log
+
+# Credentials / secrets
+credentials.json
+
+# Playwright browser profile
+backend/scripts/playwright/playwright-profile/
+
+# Account configuration
+backend/scripts/config/accounts.json
+
+# Account / authentication data
+youtube-accounts/
+playwright/.auth/
+storage/
+sessions/
+cookies/
+user-data/
+
+# VS Code / local history
+.history/
+
+# Queue
+queue

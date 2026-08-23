@@ -569,11 +569,15 @@ if (
     scene.type === "table"
 ) {
 
-     typeInstructions =
-        DiagramPromptRules(
-            scene.subject,
-            scene.type
-        );
+    typeInstructions =
+    DiagramPromptRules(
+        scene.subject,
+        scene.type,
+        scene.imagePrompt,
+        scene.displayText,
+        scene.heading,
+        scene.scene
+    );
 
 } else {
 
@@ -603,6 +607,7 @@ console.log("IMAGE SUBJECT CHECK");
 console.log("Subject:", scene.subject);
 console.log("Scene Type:", scene.type);
 console.log("=================================");
+
 
 const promptStartTime = Date.now();
 

@@ -800,6 +800,89 @@ Avoid:
 If the prompt requires a technical diagram,
 follow it exactly.
 
+// ==================================
+// PROTRACTOR / ANGLE DIAGRAM RULES
+// ==================================
+
+If the mathematical diagram contains a protractor,
+angle measurement, angle construction, or angle reading,
+follow these rules STRICTLY.
+
+PROTRACTOR STRUCTURE:
+
+- Use a standard 180-degree semicircular protractor.
+- The protractor must have exactly ONE center/vertex point.
+- The straight baseline must pass exactly through the
+  center/vertex point.
+- The 90-degree mark must be exactly at the top center.
+- Keep the protractor horizontally aligned unless the
+  supplied Image Prompt explicitly requires another
+  orientation.
+
+PROTRACTOR NUMBER SCALES:
+
+- The two number scales must run in opposite directions.
+- The scale must contain the mathematically correct
+  sequence from 0 to 180 degrees.
+- Use:
+  0, 10, 20, 30, 40, 50, 60, 70, 80, 90,
+  100, 110, 120, 130, 140, 150, 160, 170, 180.
+- Do NOT duplicate any number.
+- Do NOT omit any number.
+- Do NOT change the order of numbers.
+- Do NOT invent numbers.
+- Do NOT mirror only one side of the scale.
+- Do NOT place the same value twice where it should
+  appear only once on a scale.
+
+ANGLE MEASUREMENT:
+
+- The actual geometric angle must match the supplied
+  angle value exactly.
+- Never approximate the angle.
+- If the required angle is 116 degrees, the two rays
+  must form exactly 116 degrees.
+- Do NOT draw 115, 117, 120, or any approximate angle
+  when the required value is 116 degrees.
+- The angle arc must connect the exact two rays forming
+  the angle.
+- The displayed angle value must match the actual
+  geometric angle.
+
+CORRECT SCALE SELECTION:
+
+- Start reading from 0 degrees on the scale located
+  at the same side as the starting ray.
+- Use the correct scale according to the direction
+  of the starting ray.
+- Do NOT accidentally read the opposite scale.
+- Do NOT mix the inner scale and outer scale.
+- The selected scale must correspond to the actual
+  geometric angle.
+
+GEOMETRIC ALIGNMENT:
+
+- The vertex of the angle must be exactly at the
+  center point of the protractor.
+- The starting ray must lie exactly along the
+  protractor baseline when required.
+- The second ray must pass through the exact
+  requested degree mark.
+- The angle arc, rays, vertex and degree marking
+  must all agree.
+- Do NOT draw the ray at one angle and label it
+  with another angle.
+- Do NOT rotate the protractor independently from
+  the angle.
+
+PROTRACTOR ACCURACY HAS PRIORITY OVER ARTISTIC STYLE.
+
+Do NOT beautify, stylize, distort, rotate, mirror,
+or redesign a mathematical protractor diagram.
+
+Mathematical correctness is more important than
+visual creativity.
+
 ==================================
 MATH SCENE RANDOMIZATION
 ==================================

@@ -1,13 +1,46 @@
 const DiagramPromptRules = (
     subject = "",
-    sceneType = ""
+    sceneType = "",
+    imagePrompt = "",
+    displayText = "",
+    heading = "",
+    sceneNumber = ""
 ) => {
 
     const normalizedSubject =
         String(subject || "")
             .trim()
             .toLowerCase();
+const combinedText = `
+    ${imagePrompt || ""}
+    ${displayText || ""}
+    ${heading || ""}
+`.toLowerCase();
 
+const isProtractorScene =
+    combinedText.includes("protractor") ||
+    combinedText.includes("protector") ||
+    combinedText.includes("angle") ||
+    combinedText.includes("degree") ||
+    combinedText.includes("°");
+
+    const angleMatch = combinedText.match(
+    /(\d+(?:\.\d+)?)\s*(?:°|degrees?|degree)/i
+);
+
+const detectedAngle = angleMatch
+    ? Number(angleMatch[1])
+    : null;
+
+console.log(
+    "Protractor Scene:",
+    isProtractorScene ? "YES" : "NO"
+);
+
+console.log(
+    "Detected Angle:",
+    detectedAngle ?? "NONE"
+);
 
     // ==========================================
     // MATHEMATICS DIAGRAM
@@ -18,6 +51,27 @@ const DiagramPromptRules = (
         normalizedSubject === "math" ||
         normalizedSubject === "maths"
     ) {
+        const protractorAngleInstruction = detectedAngle !== null
+    ? `
+EXACT REQUIRED ANGLE:
+
+The current scene requires an angle of exactly ${detectedAngle} degrees.
+
+The two rays MUST form exactly ${detectedAngle} degrees.
+
+The angle label MUST also show exactly ${detectedAngle} degrees.
+
+Do NOT approximate this value.
+Do NOT substitute a nearby value.
+Do NOT draw the ray at 120 degrees if the required angle is ${detectedAngle} degrees.
+`
+    : `
+EXACT ANGLE VALUE:
+
+No exact numerical angle was detected from the scene.
+Follow the angle information explicitly provided in the imagePrompt.
+Do not invent an angle.
+`;
 
         return `
 
@@ -72,6 +126,78 @@ Do not change:
 If the imagePrompt specifies an exact
 mathematical structure, reproduce it exactly.
 
+==========================================
+PROTRACTOR DIAGRAM RULES
+==========================================
+
+If the imagePrompt requires a protractor,
+angle measurement, or angle construction,
+follow these rules strictly.
+
+${protractorAngleInstruction}
+
+PROTRACTOR STRUCTURE:
+
+- Use a standard 180-degree semicircular protractor.
+- The protractor must have exactly one center point.
+- The baseline must pass exactly through the center point.
+- The baseline must be straight and horizontal unless
+  the imagePrompt explicitly requires another orientation.
+- The 90-degree mark must be exactly at the top center.
+- Both scales must be mathematically correct.
+- The two scales must run in opposite directions.
+- Each scale must contain the correct sequence:
+  0, 10, 20, 30, 40, 50, 60, 70, 80, 90,
+  100, 110, 120, 130, 140, 150, 160, 170, 180.
+- Do NOT duplicate any number.
+- Do NOT omit any number.
+- Do NOT reorder any number.
+- Do NOT invent or alter any number.
+- Do NOT place the same value twice on the same scale.
+
+ANGLE ACCURACY:
+
+- If an exact angle value is provided, the drawn rays
+  must represent exactly that angle.
+- The displayed angle value and the actual geometric
+  angle must be identical.
+- Never approximate an angle.
+- For example, if the required angle is 116 degrees,
+  the rays must form exactly 116 degrees, NOT 120 degrees.
+- The angle arc must connect the exact two rays that
+  form the required angle.
+- The angle label must show the exact supplied value.
+
+PROTRACTOR SCALE SELECTION:
+
+- Start reading from 0 degrees on the scale that begins
+  at the same side as the starting ray.
+- Do not switch to the opposite scale.
+- Do not mix values from the inner and outer scales.
+- The selected scale must correspond to the actual
+  direction of the starting ray.
+
+GEOMETRIC CONSISTENCY:
+
+- The ray direction, protractor center, baseline,
+  angle arc, and displayed angle must all agree.
+- Do not draw a ray at one angle and label it with
+  another angle.
+- Do not rotate or distort the protractor independently
+  from the rays.
+- Keep the protractor centered on the vertex.
+
+PROTRACTOR NUMBER ACCURACY IS MORE IMPORTANT
+THAN ARTISTIC STYLE.
+
+Do not use decorative or randomly generated
+mathematical numbers.
+
+If exact numerical geometry is required,
+prioritize mathematical correctness over
+visual decoration.
+
+==========================================
 `;
     }
 

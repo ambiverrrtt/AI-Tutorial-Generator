@@ -58,11 +58,46 @@ const input = page.locator('[data-test-id="textarea-wrapper"]').getByRole('parag
 await input.click();
 await input.focus();
 
-await typeLargePrompt(page, prompt);
+const jsonSafetyInstruction = `
+
+IMPORTANT JSON VALIDITY RULES:
+
+Return ONLY one valid JSON object.
+
+The response MUST be directly parseable using JavaScript JSON.parse().
+
+Inside JSON string values:
+- Every double quote character must be escaped as \\"
+- Never place an unescaped double quote inside a string value.
+- Preserve quotation marks from the textbook content by escaping them correctly.
+- Escape backslashes correctly.
+- Use \\n for line breaks inside string values.
+- Do not use Markdown code fences.
+- Do not add explanations before or after the JSON object.
+
+Before submitting the final answer, verify that the complete response is valid JSON.
+
+Example of correct JSON:
+
+{
+  "content": "This explains the \\"distributive property\\" of multiplication."
+}
+
+Example of WRONG JSON:
+
+{
+  "content": "This explains the "distributive property" of multiplication."
+}
+`;
+
+const finalPrompt = `${prompt}\n\n${jsonSafetyInstruction}`;
+
+await typeLargePrompt(page, finalPrompt);
+
 await page.waitForTimeout(1000);
 
-console.log("Prompt length:", prompt.length);
-console.log(prompt.substring(0, 300));
+console.log("Prompt length:", finalPrompt.length);
+console.log(finalPrompt.substring(0, 300));
 
 console.log("Searching Send Button...");
 
@@ -113,7 +148,7 @@ while (true) {
 
     console.log("Current Length:", current?.length);
 
-    if (current === previous && current.length > 500) {
+   if (current === previous && current && current.length > 500) {
         break;
     }
 

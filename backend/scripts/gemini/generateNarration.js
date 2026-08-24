@@ -177,7 +177,23 @@ const mainIdeaParts = Array.isArray(mainIdea)
 
 // If Main Idea contains multiple sentences,
 // create a separate scene for each sentence.
+// ------------------------------------------
+// SAFE VISUAL CONCEPT FOR IMAGE GENERATION
+// ------------------------------------------
+// Keep the original idea unchanged for narration
+// and Display Text.
+// Only remove likely real-person names from the
+// image-generation prompt so Gemini does not try
+// to depict a public figure.
 
+function createSafeVisualIdea(text) {
+    return String(text || "")
+        .replace(
+            /\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\b/g,
+            "the person mentioned in the concept"
+        )
+        .trim();
+}
 const mainIdeaScenes = mainIdeaParts.map((idea, index) => {
 
     // Keep Display Text short.
@@ -185,15 +201,37 @@ const mainIdeaScenes = mainIdeaParts.map((idea, index) => {
     const shortIdea = idea
         .replace(/[.!?]+$/, "")
         .trim();
-
+const safeVisualIdea = createSafeVisualIdea(shortIdea);
     return {
         scene: originalScenes.length + 4  + index,
         cardId: -(index + 4),
         heading: "Main Idea",
         displayText: shortIdea,
         narration: `Remember: ${shortIdea}.`,
-        imagePrompt: `A simple, colorful, child-friendly educational closing illustration for "${topicTitle}" in ${tutorial.subject}. Teach ONLY this main idea: "${shortIdea}". Show one clear visual concept related to this idea. Do not show paragraphs, long text, Display Text, headings, labels such as "Main Idea", screenshots, video frames, UI elements, or unrelated concepts. The image must feel like the final learning moment of a story. Use very little text.`,
-        duration: 3
+       imagePrompt: `A simple, colorful, child-friendly educational closing illustration for "${topicTitle}" in ${tutorial.subject}.
+
+Teach ONLY this educational concept:
+"${safeVisualIdea}"
+
+Show one clear visual concept that explains the educational meaning of this idea.
+
+If the original concept refers to a real person, historical person, scientist, author, public figure, or other identifiable individual:
+- Do NOT create their portrait.
+- Do NOT create an identifiable depiction of that person.
+- Do NOT imitate their face or appearance.
+- Represent the person's contribution, discovery, work, research, invention, writing, or historical significance using symbolic educational visuals or a generic person.
+- Focus on the educational concept rather than the person's identity.
+
+Do not invent new facts.
+
+Do not show paragraphs, long text, UI elements, screenshots, video frames, or unrelated concepts.
+
+Do not add a realistic or identifiable public figure.
+
+The image must remain a simple educational illustration suitable for school students.
+
+Use very little text.`,
+ duration: 3
     };
 });
 

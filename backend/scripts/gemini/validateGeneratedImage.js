@@ -632,6 +632,198 @@ CURRENT scene's actual content.
 
 The current scene must always win.
 
+
+// ==========================================
+// DEEP SUBJECT-AWARE VISUAL INSPECTION
+// ==========================================
+
+DEEP VISUAL INSPECTION IS REQUIRED.
+
+Do NOT perform a superficial visual similarity check.
+
+Before returning PASS or FAIL, inspect the generated image
+carefully and independently.
+
+Use the CURRENT subject, CURRENT scene, CURRENT Display Text,
+CURRENT Image Prompt, CURRENT Visual Facts, CURRENT mustShow,
+and CURRENT mustNotShow together.
+
+The subject context must guide the validation.
+
+Do not blindly trust:
+- visible labels
+- displayed numbers
+- written answers
+- captions
+- arrows
+- visual appearance
+- apparent similarity to the prompt
+
+A value written in the image is NOT proof that the visual
+structure is correct.
+
+==========================================
+SUBJECT-AWARE REASONING
+==========================================
+
+Use your own subject knowledge to verify whether the image
+is actually correct for the current educational concept.
+
+For Mathematics:
+- independently verify geometry
+- independently verify calculations
+- independently verify equations
+- independently verify number relationships
+- independently verify angles
+- independently verify shapes
+- independently verify measurements
+- independently verify directions
+- independently verify diagram structure
+- verify that visual markings actually represent the
+  mathematical value written in the image
+
+For Science:
+- independently verify scientific relationships
+- verify direction of processes
+- verify cause-and-effect relationships
+- verify required scientific structures
+- verify labels and their corresponding structures
+- verify that objects are scientifically plausible
+- reject scientifically misleading diagrams
+
+For Physics:
+- verify direction of forces
+- verify ray direction
+- verify motion direction
+- verify circuit connections
+- verify measurements
+- verify physical relationships
+
+For Chemistry:
+- verify chemical symbols
+- verify formulas
+- verify atom/molecule relationships
+- verify reaction structure
+- verify that labels correspond to the correct particles
+  or structures
+
+For other subjects:
+- use the subject context and educational meaning to
+  independently check whether the visual representation
+  actually teaches the supplied concept.
+
+==========================================
+MICRO-DETAIL INSPECTION
+==========================================
+
+Inspect even small details that can change the meaning
+of the educational diagram.
+
+Check:
+
+- every number
+- every symbol
+- every label
+- every arrow
+- every line
+- every ray
+- every endpoint
+- every vertex
+- every intersection
+- every measurement
+- every scale
+- every tick mark when relevant
+- every direction
+- every relative position
+- every required object
+- every required relationship
+- every important proportion
+- every mathematical alignment
+- every scientific relationship
+
+Do not ignore a small error merely because the overall
+image looks correct.
+
+If a small visual error changes the educational meaning,
+return FAIL.
+
+==========================================
+GEOMETRIC TRUTH RULE
+==========================================
+
+For mathematical diagrams, NEVER assume that a displayed
+number proves that the geometry is correct.
+
+Whenever the scene contains geometry, inspect the actual
+visual geometry.
+
+For angles:
+
+1. Identify the exact vertex.
+2. Identify both rays forming the angle.
+3. Determine the direction of each ray.
+4. Determine the actual geometric angle between the rays.
+5. Compare the actual geometric angle with the required
+   angle from the CURRENT scene.
+6. Verify that the angle arc corresponds to those same
+   two rays.
+7. Verify that the displayed angle value matches the
+   actual geometry.
+8. Verify that any measuring instrument, such as a
+   protractor, is correctly positioned.
+9. Verify that the protractor center is aligned with
+   the vertex.
+10. Verify that the starting ray is aligned with the
+    correct 0-degree baseline.
+11. Verify that the second ray points to the correct
+    degree mark.
+12. Verify that the correct protractor scale is being used.
+
+CRITICAL:
+
+If the image says 42° but the actual rays form 45°,
+return FAIL.
+
+If the image says 116° but the actual rays form 120°,
+return FAIL.
+
+If the displayed value is correct but the ray is not
+aligned with the corresponding degree mark, return FAIL.
+
+If the protractor is visually present but its center is
+not aligned with the angle vertex, return FAIL.
+
+If the correct number is written but the geometry is wrong,
+return FAIL.
+
+TEXTUAL CORRECTNESS ALONE IS NEVER SUFFICIENT.
+
+==========================================
+FINAL STRICT PRINCIPLE
+==========================================
+
+PASS means:
+
+"The image is visually and educationally correct,
+not merely that it contains the expected words or numbers."
+
+If there is any meaningful mismatch between the intended
+concept and the actual visual representation, return FAIL.
+
+When uncertain about a mathematically, scientifically,
+or educationally important detail, inspect it again before
+returning PASS.
+
+Be strict.
+
+Be detail-oriented.
+
+Use subject knowledge.
+
+Check the smallest meaningful visual detail.
+
+Do not give PASS simply because the image looks good.
+
 ==========================================
 FINAL DECISION
 ==========================================
@@ -647,7 +839,20 @@ Return PASS only when:
 ✓ Numbers are correct
 ✓ Equations are correct
 ✓ Mathematical structures are correct
+✓ Actual geometry matches the required geometry
+✓ Actual angle matches the required angle
+✓ Rays are aligned correctly
+✓ Vertex is correctly positioned
+✓ Protractor center is aligned with the vertex
+✓ Correct 0-degree baseline is used
+✓ Correct protractor scale is used
+✓ Ray reaches the required degree mark
+✓ Written mathematical values agree with the actual diagram
 ✓ Scientific content is correct
+✓ Scientific relationships are visually correct
+✓ Directions and processes are correct
+✓ Labels point to the correct structures
+✓ No scientifically misleading visual detail
 
 ✓ Current Visual Facts are correctly represented
 ✓ Exact numbers from Visual Facts are correct

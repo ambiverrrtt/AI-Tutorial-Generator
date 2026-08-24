@@ -617,6 +617,12 @@ If anything is missing, regenerate before returning.
 
     const cleaned = cleanGeminiJson(response);
 
+    if (typeof cleaned !== "string") {
+    throw new Error(
+        `cleanGeminiJson() returned ${typeof cleaned} instead of a string.`
+    );
+}
+
     console.log("========== RAW CLEANED JSON ==========");
 console.log(cleaned);
 console.log("=======================================");
@@ -632,6 +638,14 @@ try {
 
     result = JSON.parse(cleaned);
     console.log("✅ JSON Parse Success");
+
+    console.log("========== PARSED RESULT CHECK ==========");
+console.log("Result type:", typeof result);
+console.log("Result keys:", Object.keys(result || {}));
+console.log("Tutorials type:", typeof result?.tutorials);
+console.log("Tutorials is array:", Array.isArray(result?.tutorials));
+console.log("Tutorial count:", result?.tutorials?.length);
+console.log("==========================================");
 
 } catch (jsonError) {
 
@@ -692,7 +706,13 @@ if (match) {
     }
 
 }
-    const mergedTutorials = [];
+if (!result || !Array.isArray(result.tutorials)) {
+    throw new Error(
+        `Invalid tutorial data. Expected result.tutorials to be an array, but received: ${typeof result?.tutorials}`
+    );
+}
+
+const mergedTutorials = [];
 
 for (let i = 0; i < result.tutorials.length; i++) {
 
@@ -741,7 +761,17 @@ if (!Array.isArray(result.tutorials)) {
     throw new Error("Tutorial list missing.");
 }
 
+console.log("===== TUTORIAL VALIDATION DEBUG =====");
+console.log("result exists:", !!result);
+console.log("tutorials exists:", !!result?.tutorials);
+console.log("tutorials is array:", Array.isArray(result?.tutorials));
+console.log("tutorial count:", result?.tutorials?.length);
+
 for (const tutorial of result.tutorials) {
+
+    console.log("Current Tutorial:", tutorial);
+    console.log("Tutorial Content:", tutorial?.content);
+    console.log("Content Length:", tutorial?.content?.length);
 
     if (!tutorial.title)
         throw new Error(`Missing title in tutorial id: ${tutorial.id}`);

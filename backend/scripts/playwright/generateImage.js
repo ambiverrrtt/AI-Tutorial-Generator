@@ -232,16 +232,36 @@ function cleanImageText(text) {
         .trim();
 }
 
+function addPublicFigureSafety(text) {
+    return String(text || "") + `
+
+IMPORTANT PERSON DEPICTION SAFETY:
+If this educational concept mentions a real person, historical person,
+scientist, researcher, author, public figure, or any identifiable individual:
+
+- Do NOT create an identifiable portrait of that person.
+- Do NOT reproduce their face or personal appearance.
+- Do NOT imitate or recreate a real person's likeness.
+- Represent the educational contribution using a generic person,
+  symbolic objects, books, laboratory equipment, research materials,
+  historical artifacts, diagrams, or other concept-related visuals.
+- Focus on the educational concept, work, discovery, research, or contribution.
+- The image must remain educational and concept-focused.
+`;
+}
+
 function buildSafeRetryPrompt(scene, retry, validationReason = "", validationHistory = [],tutorialType = "") {
 
     const displayText =
     String(scene.displayText || "").trim();
 
-    const learningIdea =
+   const learningIdea =
+    addPublicFigureSafety(
         cleanImageText(
             scene.narration ||
             scene.displayText
-        );
+        )
+    );
 
     const imageIdea =
         cleanImageText(
@@ -287,7 +307,6 @@ const failureHistory =
             scene.heading,
             scene.scene
         );
-
         
 
     return `
@@ -593,6 +612,8 @@ if (
     scene.heading,
     scene.scene
 );
+
+const personSafetyRules = addPublicFigureSafety("");
 // ==================================
 // VISUAL FACTS
 // ==================================
@@ -614,6 +635,8 @@ const promptStartTime = Date.now();
 let finalPrompt = `
 
 ${subjectRules}
+
+${personSafetyRules}
 
 IMPORTANT TEXT RULE:
 ==================================
@@ -1129,9 +1152,42 @@ if (isGeminiError) {
    finalPrompt = buildSafeRetryPrompt(
     scene,
     retry,
-    "",
+    "Gemini could not generate the previous image because it may have interpreted the scene as requiring depiction of an identifiable real person.",
     validationHistory
 );
+
+finalPrompt += `
+
+==================================
+SAFE PERSON REPRESENTATION
+==================================
+
+If the current educational concept mentions any real,
+historical, scientific, medical, literary, or public figure:
+
+DO NOT depict the person's face or identifiable appearance.
+
+Instead, visualize the person's educational contribution,
+work, discovery, research, invention, writing, experiment,
+historical context, or related concept using:
+
+- a generic person
+- symbolic objects
+- books
+- laboratory equipment
+- diagrams
+- documents
+- historical artifacts
+- concept-related educational objects
+
+Do NOT create a portrait.
+Do NOT recreate a real person's likeness.
+Do NOT imitate a public figure.
+
+The educational meaning and factual concept must remain unchanged.
+
+Generate the educational concept, NOT the person's identity.
+`;
 
     console.log("========== SAFE RETRY PROMPT ==========");
     console.log(finalPrompt);

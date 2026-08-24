@@ -24,18 +24,34 @@ export async function downloadImage(
 
     console.log("Waiting for generated image...");
 
-    const images = page.locator('img[src^="blob:"]');
+    // =============================================
+// CAPTURE EXISTING IMAGES BEFORE GENERATION
+// =============================================
 
-let previousSrc = "";
+const previousImageSources = await page.locator("img").evaluateAll(
+    (imgs) => {
 
-if (await images.count()) {
+        return imgs
+            .map(img =>
+                img.currentSrc ||
+                img.src ||
+                img.getAttribute("src") ||
+                ""
+            )
+            .filter(Boolean);
 
-    previousSrc =
-        await images.last().getAttribute("src") || "";
+    }
+);
 
-}
+console.log(
+    "Previous Image Count:",
+    previousImageSources.length
+);
 
-console.log("Previous Image Src:", previousSrc);
+// console.log(
+//     "Previous Image Sources:",
+//     previousImageSources.slice(-5)
+// );
 
 // Wait for a NEW image OR the last image src to change
 
@@ -57,7 +73,7 @@ let waitResult;
 try {
 
     waitResult = await page.waitForFunction(
-        ({ oldSrc, errorPhrases }) => {
+   ({ previousSources, errorPhrases }) => {
 
             const responses =
                 document.querySelectorAll("model-response");
@@ -92,40 +108,121 @@ try {
 
             }
 
-            const imgs =
-                document.querySelectorAll(
-                    'img[src^="blob:"]'
-                );
 
-            if (imgs.length > 0) {
+// ==========================================
+// FIND ONLY NEW GENERATED GEMINI IMAGE
+// ==========================================
 
-                const latest =
-                    imgs[imgs.length - 1];
+const imgs =
+    Array.from(
+        document.querySelectorAll("img")
+    );
 
-                const latestSrc =
-                    latest.src || "";
+const validImages = imgs
+    .map((img, index) => {
 
-                if (latestSrc !== oldSrc) {
+        const rect =
+            img.getBoundingClientRect();
 
-                    return {
-                        status: "IMAGE_READY",
-                        responseCount: responses.length,
-                        imageCount: imgs.length,
-                        latestSrc: latestSrc.slice(0, 100)
-                    };
+        const src =
+            img.currentSrc ||
+            img.src ||
+            img.getAttribute("src") ||
+            "";
 
-                }
+        return {
+            index,
+            src,
+            width: rect.width,
+            height: rect.height,
 
-            }
+            area:
+                rect.width *
+                rect.height,
 
-            return false;
+            visible:
+                rect.width > 0 &&
+                rect.height > 0 &&
+                rect.bottom > 0 &&
+                rect.right > 0
+        };
+
+    })
+    .filter(img =>
+
+        img.visible &&
+
+        img.src &&
+
+        // Ignore small icons, avatar,
+        // microphone etc.
+        img.width >= 300 &&
+
+        img.height >= 180 &&
+
+        img.area >= 100000
+
+    )
+    .sort(
+        (a, b) =>
+            b.area - a.area
+    );
+
+
+// ==========================================
+// ONLY ACCEPT IMAGE THAT WAS NOT PRESENT
+// BEFORE PROMPT WAS SENT
+// ==========================================
+
+const newImage =
+    validImages.find(
+        img =>
+            !previousSources.includes(
+                img.src
+            )
+    );
+if (newImage) {
+
+    return {
+
+        status:
+            "IMAGE_READY",
+
+        responseCount:
+            responses.length,
+
+        imageCount:
+            validImages.length,
+
+        latestSrc:
+            newImage.src,
+
+        width:
+            newImage.width,
+
+        height:
+            newImage.height
+
+    };
+
+}
+// ==========================================
+// OLD IMAGE ONLY
+// KEEP WAITING
+// ==========================================
+
+console.log(
+    "No NEW generated image yet. Continuing to wait..."
+);
+
+return false;
 
         },
 
-        {
-            oldSrc: previousSrc,
-            errorPhrases
-        },
+      {
+    previousSources: previousImageSources,
+    errorPhrases
+},
 
         {
             timeout: 300000
@@ -152,10 +249,8 @@ catch (err) {
             const responses =
                 document.querySelectorAll("model-response");
 
-            const images =
-                document.querySelectorAll(
-                    'img[src^="blob:"]'
-                );
+           const images =
+    document.querySelectorAll("img");
 
             const visibleImages =
                 Array.from(images).filter(
@@ -315,22 +410,140 @@ for (let attempt = 1; attempt <= 3; attempt++) {
 
         console.log(`Image Click Attempt ${attempt}`);
 
-        const image = page.locator(
-            'img[src^="blob:"]:visible'
-        ).last();
+    // ============================================
+// FIND GENERATED IMAGE
+// ============================================
 
-        await image.waitFor({
-            state: "visible",
-            timeout: 30000
-        });
+// DO NOT use:
+// page.locator("img:visible").last();
+//
+// Gemini page par bahut saare img elements hote hain.
+// Last visible img microphone/avatar/icon bhi ho sakta hai.
+//
+// Isliye large visible image ko identify karenge.
 
-        await image.scrollIntoViewIfNeeded();
+const imageInfo = await page.locator("img").evaluateAll(
+    (imgs) => {
 
-       await image.click({
-    force: true
+        return imgs
+            .map((img, index) => {
+
+                const rect =
+                    img.getBoundingClientRect();
+
+                const src =
+                    img.currentSrc ||
+                    img.src ||
+                    img.getAttribute("src") ||
+                    "";
+
+                return {
+                    index,
+                    src,
+                    width: rect.width,
+                    height: rect.height,
+                    area:
+                        rect.width *
+                        rect.height,
+
+                    visible:
+                        rect.width > 0 &&
+                        rect.height > 0 &&
+                        rect.bottom > 0 &&
+                        rect.right > 0
+                };
+
+            })
+
+            // Small icons, microphone, avatar etc. remove
+            .filter(img =>
+                img.visible &&
+                img.width >= 300 &&
+                img.height >= 180 &&
+                img.area >= 100000
+            )
+
+            // Sabse badi image ko first rakho
+            .sort(
+                (a, b) =>
+                    b.area - a.area
+            )[0] || null;
+    }
+);
+
+// console.log(
+//     "Selected Generated Image:",
+//     imageInfo
+// );
+
+if (!imageInfo) {
+
+    throw new Error(
+        "No large generated image found for clicking."
+    );
+
+}
+
+
+// ============================================
+// LOCATE SELECTED IMAGE AGAIN
+// ============================================
+
+const image =
+    page.locator("img").nth(
+        imageInfo.index
+    );
+
+await image.waitFor({
+    state: "visible",
+    timeout: 30000
 });
 
-console.log("Image Clicked");
+await image.scrollIntoViewIfNeeded();
+
+console.log(
+    "Trying to click generated image..."
+);
+
+
+// ============================================
+// NORMAL CLICK
+// ============================================
+
+try {
+
+    await image.click({
+        timeout: 10000
+    });
+
+    console.log(
+        "Generated Image Clicked"
+    );
+
+} catch (clickError) {
+
+    console.log(
+        "Normal image click failed."
+    );
+
+    console.log(
+        "Trying force click..."
+    );
+
+
+    // ========================================
+    // FORCE CLICK
+    // ========================================
+
+    await image.click({
+        force: true,
+        timeout: 10000
+    });
+
+    console.log(
+        "Generated Image Force Clicked"
+    );
+}
 
 console.log("Step 1");
 

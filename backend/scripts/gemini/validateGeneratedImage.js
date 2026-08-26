@@ -894,7 +894,135 @@ OR:
 Do not return Markdown.
 Do not return explanations outside JSON.
 `;
+// ==========================================
+// GEMINI ATTACHMENT HELPER
+// ==========================================
 
+async function findAttachmentButton() {
+
+    const attachmentSelectors = [
+        'button[aria-label="Upload and tools"]',
+        'button[aria-label*="Attach" i]',
+        'button[aria-label*="Upload" i]',
+        'button[aria-label*="Add" i]',
+        'button[aria-label*="attachment" i]',
+        'button[aria-label*="file" i]',
+        'button[aria-label*="photo" i]',
+        'button[aria-label*="image" i]',
+        'button[title*="Attach" i]',
+        'button[title*="Upload" i]',
+        'button[title*="Add" i]'
+    ];
+
+    const startTime = Date.now();
+
+    while (
+        Date.now() - startTime < ATTACH_TIMEOUT
+    ) {
+
+        // First try known selectors
+        for (const selector of attachmentSelectors) {
+
+            try {
+
+                const candidate =
+                    page.locator(selector).last();
+
+                if (
+                    await candidate.count() &&
+                    await candidate.isVisible().catch(() => false) &&
+                    await candidate.isEnabled().catch(() => false)
+                ) {
+
+                    console.log(
+                        "Attachment button found:",
+                        selector
+                    );
+
+                    return candidate;
+                }
+
+            } catch {
+                // Try next selector
+            }
+        }
+
+        // Fallback: inspect visible buttons
+        const buttons = page.locator("button");
+        const count = await buttons.count();
+
+        for (let i = 0; i < count; i++) {
+
+            try {
+
+                const button = buttons.nth(i);
+
+                if (
+                    !(await button.isVisible().catch(() => false)) ||
+                    !(await button.isEnabled().catch(() => false))
+                ) {
+                    continue;
+                }
+
+                const aria =
+                    (
+                        await button
+                            .getAttribute("aria-label")
+                            .catch(() => "")
+                    ) || "";
+
+                const title =
+                    (
+                        await button
+                            .getAttribute("title")
+                            .catch(() => "")
+                    ) || "";
+
+                const text =
+                    (
+                        await button
+                            .innerText()
+                            .catch(() => "")
+                    ) || "";
+
+                const value =
+                    `${aria} ${title} ${text}`
+                        .toLowerCase();
+
+                if (
+                    value.includes("upload") ||
+                    value.includes("attach") ||
+                    value.includes("attachment") ||
+                    value.includes("photo") ||
+                    value.includes("image") ||
+                    value.includes("file")
+                ) {
+
+                    console.log(
+                        "Dynamic attachment button found:",
+                        {
+                            index: i,
+                            aria,
+                            title,
+                            text
+                        }
+                    );
+
+                    return button;
+                }
+
+            } catch {
+                // Ignore and continue
+            }
+        }
+
+        await page.waitForTimeout(2000);
+    }
+
+    throw new Error(
+        "GEMINI_ATTACHMENT_BUTTON_TIMEOUT"
+    );
+}
         // ==========================================
         // TYPE PROMPT
         // ==========================================
@@ -1629,16 +1757,23 @@ console.log(
 
         await page.waitForTimeout(4000);
 
+// ==========================================
+// VALIDATION RETRY CONFIGURATION
+// ==========================================
+
+const MAX_VALIDATION_RETRIES = 3;
+let validationRetryCount = 0;
+
         // ==========================================
         // READ RESPONSE
         // ==========================================
 
         let previous = "";
-        let stableCount = 0;
+let stableCount = 0;
 
-        const startTime = Date.now();
+let startTime = Date.now();
 
-        while (true) {
+while (true) {
 
             if (
                 Date.now() - startTime >
@@ -1653,15 +1788,20 @@ console.log(
 
             await page.waitForTimeout(2000);
 
-            const responses =
-                page.locator(
-                    "model-response"
-                );
+           const responses =
+    page.locator(
+        "model-response"
+    );
 
-            const responseBlock =
-                responses.nth(
-                    oldResponseCount
-                );
+const responseCount =
+    await responses.count();
+
+if (responseCount === 0) {
+    continue;
+}
+
+const responseBlock =
+    responses.last();
 
             let current = "";
 
@@ -1696,6 +1836,312 @@ console.log(
                 "Validation Response:",
                 current
             );
+
+            // ==========================================
+// GEMINI VALIDATION ERROR DETECTION + RETRY
+// ==========================================
+const validationErrorPhrases = [
+    "something went wrong",
+    "sorry, something went wrong",
+    "something went wrong while",
+    "please try your request again",
+    "please try again",
+    "try again",
+    "i encountered an error",
+    "i seem to be encountering an error",
+    "i ran into an error",
+    "i ran into an issue",
+    "i encountered an issue",
+    "there was an error",
+    "there seems to be an error",
+    "can i try something else",
+    "could you try again",
+    "i'm having a hard time fulfilling",
+    "im having a hard time fulfilling",
+    "unable to generate",
+    "unable to process",
+    "unable to complete",
+    "couldn't generate",
+    "couldn't process",
+    "couldn't complete",
+    "can't generate",
+    "can't process",
+    "cannot generate",
+    "cannot process"
+];
+
+const normalizedValidationResponse =
+    current
+        .trim()
+        .toLowerCase();
+
+const validationErrorDetected =
+    validationErrorPhrases.some(
+        phrase =>
+            normalizedValidationResponse.includes(phrase)
+    );
+
+    console.log(
+    "Validation Error Detected:",
+    validationErrorDetected
+);
+
+if (validationErrorDetected) {
+
+    console.log("=================================");
+    console.log("GEMINI VALIDATION ERROR DETECTED");
+    console.log("=================================");
+    console.log(current);
+    console.log("=================================");
+
+    if (
+        validationRetryCount >=
+        MAX_VALIDATION_RETRIES
+    ) {
+
+        console.log(
+            "Maximum validation retries reached."
+        );
+
+        throw new Error(
+            "GEMINI_VALIDATION_FAILED_AFTER_RETRIES"
+        );
+    }
+
+    validationRetryCount++;
+
+    console.log(
+        `Retrying SAME IMAGE VALIDATION... Attempt ${validationRetryCount}/${MAX_VALIDATION_RETRIES}`
+    );
+
+// Wait before retry
+await page.waitForTimeout(5000);
+
+// Clear current Gemini input
+await input.click();
+
+await page.keyboard.down("Control");
+await page.keyboard.press("KeyA");
+await page.keyboard.up("Control");
+
+await page.keyboard.press("Backspace");
+
+// Re-enter SAME validation prompt
+await input.fill(validationPrompt);
+
+console.log(
+    "Same validation prompt entered again."
+);
+
+// Re-attach SAME IMAGE
+console.log(
+    "Re-attaching same image for validation retry..."
+);
+
+// ==========================================
+// FIND FILE INPUT FOR RETRY
+// ==========================================
+
+let retryFileInput =
+    page.locator(
+        'input[type="file"]'
+    ).first();
+
+let retryFileInputCount =
+    await retryFileInput.count();
+
+if (retryFileInputCount === 0) {
+
+    console.log(
+        "File input not available."
+    );
+
+    console.log(
+        "Opening Gemini attachment menu for retry..."
+    );
+
+    const retryAttachButton =
+        await findAttachmentButton();
+
+    await retryAttachButton.click({
+        force: true,
+        timeout: 30000
+    });
+
+    console.log(
+        "Retry attachment menu opened."
+    );
+
+    retryFileInput =
+        await getFileInputWithRetry();
+
+} else {
+
+    console.log(
+        "Existing file input found for retry."
+    );
+}
+
+// ==========================================
+// ATTACH SAME IMAGE WITH RETRY
+// ==========================================
+
+let retryImageAttached = false;
+
+for (
+    let attempt = 1;
+    attempt <= 3;
+    attempt++
+) {
+
+    try {
+
+        console.log(
+            `Retry image attach attempt ${attempt}/3`
+        );
+
+        retryFileInput =
+            page.locator(
+                'input[type="file"]'
+            ).first();
+
+        await retryFileInput.waitFor({
+            state: "attached",
+            timeout: 30000
+        });
+
+        await retryFileInput.setInputFiles(
+            imagePath,
+            {
+                timeout: 60000
+            }
+        );
+
+        retryImageAttached = true;
+
+        console.log(
+            "Same image re-attached successfully."
+        );
+
+        break;
+
+    } catch (err) {
+
+        console.log(
+            `Retry image attach attempt ${attempt} failed:`,
+            err.message
+        );
+
+        if (attempt < 3) {
+
+            await page.waitForTimeout(5000);
+
+            // Try to find file input again
+            retryFileInput =
+                page.locator(
+                    'input[type="file"]'
+                ).first();
+
+        }
+    }
+}
+
+if (!retryImageAttached) {
+
+    throw new Error(
+        "GEMINI_VALIDATION_RETRY_IMAGE_ATTACH_FAILED"
+    );
+}
+
+console.log(
+    "Same image re-attached successfully."
+);
+
+// Wait for Send button
+const retrySendButton =
+    page.locator(
+        'button[aria-label="Send message"]'
+    ).last();
+
+await retrySendButton.waitFor({
+    state: "visible",
+    timeout: 60000
+});
+
+// Wait until enabled
+await page.waitForFunction(
+    () => {
+
+        const buttons =
+            Array.from(
+                document.querySelectorAll(
+                    'button[aria-label="Send message"]'
+                )
+            );
+
+        const button =
+            buttons[buttons.length - 1];
+
+        return (
+            button &&
+            !button.disabled &&
+            !button.hasAttribute("disabled")
+        );
+    },
+    null,
+    {
+        timeout: 60000
+    }
+);
+
+console.log(
+    "Retry Send button is enabled."
+);
+
+// Current response count
+const retryOldResponseCount =
+    await page
+        .locator("model-response")
+        .count();
+
+console.log(
+    "Retry Old Response Count:",
+    retryOldResponseCount
+);
+
+// Send SAME validation again
+await retrySendButton.click({
+    timeout: 30000
+});
+
+console.log(
+    `Validation retry ${validationRetryCount} submitted successfully.`
+);
+
+// Wait for NEW response
+await page.waitForFunction(
+    oldCount =>
+        document.querySelectorAll(
+            "model-response"
+        ).length > oldCount,
+    retryOldResponseCount,
+    {
+        timeout: 300000
+    }
+);
+
+console.log(
+    "New retry validation response detected."
+);
+
+// Reset response reading state
+previous = "";
+stableCount = 0;
+startTime = Date.now();
+
+continue;
+
+}
 
             const hasJson =
                 current.includes("{") &&

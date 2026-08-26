@@ -134,7 +134,50 @@ await page.waitForFunction(() => {
 
 console.log("Stop button disappeared");
 
+// ------------------------------------------
+// GEMINI ERROR DETECTION
+// ------------------------------------------
 
+const geminiErrorPhrases = [
+    "something went wrong",
+    "sorry, something went wrong",
+    "please try your request again",
+    "i seem to be encountering an error",
+    "can i try something else",
+    "i'm having a hard time fulfilling this request",
+    "unable to generate",
+    "couldn't generate",
+    "can't generate"
+];
+
+const latestGeminiResponse = await page
+    .locator("model-response")
+    .last()
+    .innerText()
+    .catch(() => "");
+
+const normalizedGeminiResponse =
+    String(latestGeminiResponse || "")
+        .trim()
+        .toLowerCase();
+
+const geminiErrorDetected =
+    geminiErrorPhrases.some(
+        phrase => normalizedGeminiResponse.includes(phrase)
+    );
+
+if (geminiErrorDetected) {
+
+    console.log("=================================");
+    console.log("GEMINI ERROR DETECTED");
+    console.log("=================================");
+    console.log(latestGeminiResponse);
+    console.log("=================================");
+
+    throw new Error(
+        "GEMINI_REQUEST_FAILED"
+    );
+}
 let previous = "";
 
 while (true) {
@@ -144,11 +187,39 @@ while (true) {
     const current = await page
         .locator("model-response .markdown")
         .last()
-        .innerText();
+        .innerText()
+        .catch(() => "");
 
     console.log("Current Length:", current?.length);
 
-   if (current === previous && current && current.length > 500) {
+    const normalizedCurrent =
+        String(current || "")
+            .trim()
+            .toLowerCase();
+
+    const errorDetected =
+        geminiErrorPhrases.some(
+            phrase => normalizedCurrent.includes(phrase)
+        );
+
+    if (errorDetected) {
+
+        console.log("=================================");
+        console.log("GEMINI ERROR DETECTED DURING RESPONSE");
+        console.log("=================================");
+        console.log(current);
+        console.log("=================================");
+
+        throw new Error(
+            "GEMINI_REQUEST_FAILED"
+        );
+    }
+
+    if (
+        current === previous &&
+        current &&
+        current.length > 500
+    ) {
         break;
     }
 

@@ -157,6 +157,39 @@ while (true) {
 
     console.log("Current Length:", current.length);
 
+    const geminiErrorPhrases = [
+    "something went wrong",
+    "sorry, something went wrong",
+    "please try your request again",
+    "i seem to be encountering an error",
+    "can i try something else",
+    "i'm having a hard time fulfilling this request",
+    "unable to generate",
+    "couldn't generate",
+    "can't generate"
+];
+
+const normalizedCurrent =
+    current.toLowerCase();
+
+const geminiErrorDetected =
+    geminiErrorPhrases.some(
+        phrase => normalizedCurrent.includes(phrase)
+    );
+
+if (geminiErrorDetected) {
+
+    console.log("=================================");
+    console.log("GEMINI UI ERROR DETECTED");
+    console.log("=================================");
+    console.log(current);
+    console.log("=================================");
+
+    throw new Error(
+        "GEMINI_REQUEST_FAILED"
+    );
+}
+
   const hasJson =
     current.includes("{") &&
     current.includes("}");

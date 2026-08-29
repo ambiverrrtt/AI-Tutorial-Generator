@@ -524,56 +524,116 @@ export async function splitTeachingConcepts(
 
 
     // ==================================================
-    // GEMINI RESPONSE
-    // ==================================================
+// GEMINI RESPONSE WITH RETRY
+// ==================================================
 
-    const raw =
-        await generateNarrationPlaywright(
+const MAX_RETRIES = 3;
+
+let json = null;
+let raw = "";
+
+for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+
+    console.log("================================");
+    console.log(
+        `Concept Generation Attempt ${attempt}/${MAX_RETRIES}`
+    );
+    console.log("================================");
+
+    try {
+
+        raw = await generateNarrationPlaywright(
             prompt,
             accountId
         );
 
-
-    console.log(
-        "========== RAW CONCEPTS =========="
-    );
-
-    console.log(raw);
-
-    console.log(
-        "=================================="
-    );
-
-
-    // ==================================================
-    // EXTRACT VALID JSON
-    // ==================================================
-
-    const json =
-        extractValidConceptJSON(
-            raw
+        console.log(
+            "========== RAW CONCEPTS =========="
         );
 
+        console.log(raw);
 
-    // ==================================================
-    // VALIDATION
-    // ==================================================
-
-    if (!json) {
-
-        console.error(
-            "Gemini returned invalid Concept JSON."
+        console.log(
+            "=================================="
         );
 
-        console.error(
-            "Raw response could not be parsed."
+        // ==================================================
+        // EXTRACT VALID JSON
+        // ==================================================
+
+        json = extractValidConceptJSON(raw);
+
+        // ==================================================
+        // CHECK JSON
+        // ==================================================
+
+        if (json) {
+
+            console.log(
+                `✅ Concept JSON valid on attempt ${attempt}`
+            );
+
+            break;
+        }
+
+        console.log(
+            `❌ Concept JSON invalid on attempt ${attempt}`
         );
 
-        throw new Error(
-            "Invalid Concept JSON returned by Gemini."
+    } catch (error) {
+
+        console.log(
+            `❌ Concept generation attempt ${attempt} failed:`
+        );
+
+        console.log(error.message);
+
+    }
+
+    // ==================================================
+    // RETRY
+    // ==================================================
+
+    if (attempt < MAX_RETRIES) {
+
+        console.log(
+            "🔄 Retrying SAME concept generation..."
+        );
+
+        await new Promise(resolve =>
+            setTimeout(resolve, 3000)
         );
 
     }
+
+}
+
+// ==================================================
+// ALL RETRIES FAILED
+// ==================================================
+
+if (!json) {
+
+    console.error(
+        "================================="
+    );
+
+    console.error(
+        "❌ CONCEPT GENERATION FAILED"
+    );
+
+    console.error(
+        `All ${MAX_RETRIES} attempts failed.`
+    );
+
+    console.error(
+        "================================="
+    );
+
+    throw new Error(
+        "Invalid Concept JSON returned by Gemini after all retries."
+    );
+}
 
 
     if (

@@ -28,14 +28,45 @@ export async function generateMainIdea(
         throw new Error("Main Idea JSON not found.");
     }
 
-    const json = JSON.parse(
-        raw
-            .substring(start, end + 1)
-            .trim()
-            .replace(/```json/gi, "")
-            .replace(/```/g, "")
-            .replace(/[\u200B-\u200D\uFEFF]/g, "")
-    );
+    let cleanedJson = raw
+    .substring(start, end + 1)
+    .trim()
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "");
+
+// Fix raw line breaks inside JSON string values
+cleanedJson = cleanedJson.replace(
+    /"idea"\s*:\s*"([\s\S]*?)"/g,
+    (match, value) => {
+        const fixedValue = value
+            .replace(/\r?\n+/g, " ")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+
+        return `"idea": "${fixedValue}"`;
+    }
+);
+
+let json;
+
+try {
+
+    json = JSON.parse(cleanedJson);
+
+    console.log("✅ Main Idea JSON parsed successfully.");
+
+} catch (error) {
+
+    console.log("❌ Main Idea JSON Parse Failed:");
+    console.log(error.message);
+
+    console.log("========== CLEANED JSON ==========");
+    console.log(cleanedJson);
+    console.log("==================================");
+
+    throw error;
+}
 
 return json.mainIdeas
     .map(item => item.idea)

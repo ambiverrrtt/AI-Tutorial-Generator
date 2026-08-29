@@ -1881,11 +1881,6 @@ const validationErrorDetected =
             normalizedValidationResponse.includes(phrase)
     );
 
-    console.log(
-    "Validation Error Detected:",
-    validationErrorDetected
-);
-
 if (validationErrorDetected) {
 
     console.log("=================================");

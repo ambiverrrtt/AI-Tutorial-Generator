@@ -949,11 +949,13 @@ for (let retry = 1; retry <= 6; retry++) {
 
     try {
 
+        const currentGenerationStartTime = Date.now();
+
         imagePath = await downloadImage(
             page,
             outputFolder,
             fileName,
-            imageGenerationStartTime
+            currentGenerationStartTime
         );
 
 console.log(
@@ -1052,12 +1054,32 @@ console.log(
         console.log(
             "======================================"
         );
+// 👇 YE NAYA DEBUG LOG YAHAN ADD KARO
 
+    console.log(
+        "========== RESTARTING GENERATION =========="
+    );
+
+    console.log(
+        "Retry Prompt Length:",
+        finalPrompt.length
+    );
+
+    console.log(
+        "Retry Prompt:",
+        finalPrompt
+    );
+
+    console.log(
+        "=========================================="
+    );
         await restartGeneration(
             page,
             finalPrompt
         );
-
+console.log(
+        `✅ Retry ${retry + 1} prompt submitted`
+    );
         continue;
     }
 

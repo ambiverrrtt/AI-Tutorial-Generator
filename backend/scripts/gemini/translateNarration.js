@@ -873,8 +873,12 @@ if (Array.isArray(translatedJson)) {
     };
 }
 
-if (!translatedJson.narrations) {
+if (!translatedJson.narration && !translatedJson.narrations) {
     throw new Error("Gemini returned wrong JSON format.");
+}
+
+if (!translatedJson.narrations) {
+    translatedJson.narrations = translatedJson.narration;
 }
 
 const expectedSceneNumbers =

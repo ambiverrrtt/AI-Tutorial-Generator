@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import { getBrowser } from "../playwright/browser.js";
 import { safeClosePage } from "../playwright/safeClosePage.js";
-
+import { jsonrepair } from "jsonrepair";
 /**
  * Validate a generated educational image against
  * the CURRENT scene only.
@@ -893,6 +893,24 @@ OR:
 
 Do not return Markdown.
 Do not return explanations outside JSON.
+
+IMPORTANT:
+
+Return ONLY valid JSON.
+
+The "reason" value MUST be a valid JSON string.
+
+If you mention any quotation marks inside "reason",
+escape them with backslash.
+
+Example:
+
+{
+  "result": "PASS",
+  "reason": "The image correctly displays the required text \"An electric lamp contains a filament that glows\"."
+}
+
+Do NOT return unescaped quotation marks inside JSON string values.
 `;
 // ==========================================
 // GEMINI ATTACHMENT HELPER
@@ -2209,29 +2227,35 @@ continue;
 
         let validation;
 
-        try {
+try {
+    validation = JSON.parse(jsonText);
 
-            validation =
-                JSON.parse(
-                    jsonText
-                );
+    console.log("✅ Validator JSON parsed successfully.");
 
-        }
-        catch (err) {
+} catch (err) {
 
-            console.log(
-                "Invalid validator response:"
-            );
+    console.log("❌ Invalid validator JSON:");
+    console.log(previous);
+    console.log("JSON Parse Error:", err.message);
 
-            console.log(
-                previous
-            );
+    // Try repairing Gemini's invalid JSON
+    try {
+        const repairedJson = jsonrepair(jsonText);
 
-            throw new Error(
-                "IMAGE_VALIDATION_INVALID_JSON"
-            );
+        validation = JSON.parse(repairedJson);
 
-        }
+        console.log("✅ Validator JSON repaired successfully.");
+
+    } catch (repairError) {
+
+        console.log("❌ Validator JSON repair failed:");
+        console.log(repairError.message);
+
+        throw new Error(
+            "IMAGE_VALIDATION_INVALID_JSON"
+        );
+    }
+}
 
         // ==========================================
         // FINAL CHECK

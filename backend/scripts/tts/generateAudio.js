@@ -11,9 +11,9 @@ export async function generateAudio(
         `Generating Audio : ${narrationJson.title}`
     );
 
-   const cleanTitle = narrationJson.title
-    .replace(/^\d+(\.\d+)(\([A-Z]\))?\s*/, "");
-
+    const cleanTitle = narrationJson.title
+ .replace(/^\d+(\.\d+)*(\([A-Z]\))?\s*/, ""); 
+ 
 const safeTitle = cleanTitle
     .replace(/⁰/g, "0")
     .replace(/¹/g, "1")
@@ -34,10 +34,18 @@ const folderName = (
         ? `${narrationJson.sectionNumber}-${safeTitle}`
         : safeTitle
 )
+    // Remove Windows-invalid filename characters
     .replace(/[\\/:*?"<>|]/g, "")
+
+    // Remove newline, carriage return and tab
     .replace(/[\r\n\t]/g, " ")
+
+    // Convert multiple spaces into one
     .replace(/\s+/g, " ")
+
+    // Remove trailing dots/spaces
     .replace(/[. ]+$/g, "")
+
     .trim();
 
 const safeChapterName = String(narrationJson.chapterName || "")

@@ -447,6 +447,22 @@ Display Text must be extremely short.
 
 Maximum 6 words.
 
+DISPLAY TEXT RULES:
+
+- Maximum 6 words for normal displayText.
+- Keep displayText concise.
+- Do not use long explanatory sentences.
+- For mathematical/scientific processes, use compact notation and symbols.
+- Prefer symbols, arrows, and equations when they express the idea clearly.
+
+Example:
+
+WRONG:
+"O to A, B, and O is one oscillation"
+
+CORRECT:
+"O → A → B → O = One Oscillation"
+
 Prefer 3 to 5 words.
 
 Use only one tiny idea.

@@ -64,9 +64,10 @@ const narrationWordCount = wordCount(scene.narration);
 const displayTextValue = String(scene.displayText || "").trim();
 
 const isMathematicalExpression =
-    /[\d()+\-×÷=*/<>≤≥]|\bvs\b/i.test(
+    /[\d()+\-×÷=*/<>≤≥→←↑↓]|∑|√|∞|\bvs\b/i.test(
         displayTextValue
     );
+    
 if (!isMathematicalExpression && displayWordCount > 6) {
     throw new Error(
         `Display Text too long in scene ${scene.scene}: ${scene.displayText}`

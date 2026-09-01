@@ -2230,30 +2230,88 @@ continue;
 try {
     validation = JSON.parse(jsonText);
 
-    console.log("✅ Validator JSON parsed successfully.");
+    console.log(
+        "✅ Validator JSON parsed successfully."
+    );
 
 } catch (err) {
 
-    console.log("❌ Invalid validator JSON:");
+    console.log(
+        "❌ Invalid validator JSON:"
+    );
+
     console.log(previous);
-    console.log("JSON Parse Error:", err.message);
 
-    // Try repairing Gemini's invalid JSON
+    console.log(
+        "JSON Parse Error:",
+        err.message
+    );
+
+    // ==========================================
+    // TRY JSON REPAIR
+    // ==========================================
+
     try {
-        const repairedJson = jsonrepair(jsonText);
 
-        validation = JSON.parse(repairedJson);
+        const repairedJson =
+            jsonrepair(jsonText);
 
-        console.log("✅ Validator JSON repaired successfully.");
+        validation =
+            JSON.parse(repairedJson);
+
+        console.log(
+            "✅ Validator JSON repaired successfully."
+        );
 
     } catch (repairError) {
 
-        console.log("❌ Validator JSON repair failed:");
-        console.log(repairError.message);
-
-        throw new Error(
-            "IMAGE_VALIDATION_INVALID_JSON"
+        console.log(
+            "❌ Validator JSON repair failed:"
         );
+
+        console.log(
+            repairError.message
+        );
+
+        // ==========================================
+        // FALLBACK: EXTRACT RESULT + REASON
+        // ==========================================
+
+        const resultMatch =
+            jsonText.match(
+                /"result"\s*:\s*"(PASS|FAIL)"/i
+            );
+
+        const reasonMatch =
+            jsonText.match(
+                /"reason"\s*:\s*"([\s\S]*)"\s*}\s*$/
+            );
+
+        if (resultMatch) {
+
+            const result =
+                resultMatch[1].toUpperCase();
+
+            let reason =
+                reasonMatch
+                    ? reasonMatch[1]
+                    : "Validation completed.";
+
+            validation = {
+                result,
+                reason
+            };
+
+            console.log(
+                "✅ Validator response recovered using fallback."
+            );
+
+        } else {
+
+            throw new Error(
+                "IMAGE_VALIDATION_INVALID_JSON"
+            );
+        }
     }
 }
 

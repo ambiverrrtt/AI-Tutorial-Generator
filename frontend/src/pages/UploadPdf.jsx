@@ -383,7 +383,7 @@ function UploadPdf() {
                     </option>
 
                     <option value="4">
-                        Worker 4 - Harsh
+                        Worker 4 - Ashu
                     </option>
 
                     <option value="5">
@@ -410,6 +410,9 @@ function UploadPdf() {
                         Worker 10 - Mayank Kumar
                     </option>
 
+                    <option value="11">
+                        Worker 11 - Nmabagli
+                    </option>
                 </select>
 
 

@@ -128,6 +128,41 @@ while (true) {
 
 const response = previous;
 
+// ========================================
+// GEMINI ERROR RESPONSE DETECTION
+// ========================================
+
+const geminiErrorPatterns = [
+    "I encountered an error doing what you asked",
+    "Could you try again?",
+    "I'm having a hard time fulfilling your request",
+    "Can I help you with something else instead?"
+];
+
+const isGeminiError = geminiErrorPatterns.some(
+    errorText =>
+        response
+            .toLowerCase()
+            .includes(errorText.toLowerCase())
+);
+
+if (isGeminiError) {
+
+    console.log(
+        "\n❌ Gemini returned an error response."
+    );
+
+    console.log(
+        "Gemini Error Response:",
+        response
+    );
+
+    await safeClosePage(page);
+
+    throw new Error(
+        `Gemini temporary error response: ${response}`
+    );
+}
 console.log("Response Ends with :");
 console.log(response.slice(-200));
 

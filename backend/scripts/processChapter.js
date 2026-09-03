@@ -23,11 +23,11 @@ import { extractTeachingSteps } from "./gemini/extractTeachingSteps.js";
 import { generateTeachingPlan } from "./gemini/generateTeachingPlan.js";
 import { generateScenePlan } from "./gemini/generateScenePlan.js";
 import { cleanupTutorial } from "./cleanup/cleanupTutorial.js";
+const MAX_TOPIC_RETRY = 3;
 dotenv.config();
-function repairUnescapedQuotes(text) {
+function sanitizeJsonStringContent(text) {
 
     let result = "";
-
     let inString = false;
     let escaped = false;
 
@@ -35,22 +35,165 @@ function repairUnescapedQuotes(text) {
 
         const char = text[i];
 
-        // -----------------------------------------
-        // Existing escaped character
-        // -----------------------------------------
+        // ----------------------------------
+        // Existing escape sequence
+        // ----------------------------------
 
         if (escaped) {
 
-            result += char;
+            // Valid JSON escapes
+            if (
+                char === '"' ||
+                char === "\\" ||
+                char === "/" ||
+                char === "b" ||
+                char === "f" ||
+                char === "n" ||
+                char === "r" ||
+                char === "t"
+            ) {
+                result += char;
+            } else {
+
+                // Invalid escape like \times, \x etc.
+                // Keep the actual character, escape backslash
+                result += "\\" + char;
+            }
+
             escaped = false;
+            continue;
+        }
+
+        // ----------------------------------
+        // Backslash
+        // ----------------------------------
+
+        if (char === "\\") {
+
+            if (inString) {
+                escaped = true;
+                result += char;
+            } else {
+                result += char;
+            }
 
             continue;
         }
 
-        // -----------------------------------------
-        // Backslash
-        // -----------------------------------------
+        // ----------------------------------
+        // Quote
+        // ----------------------------------
 
+        if (char === '"') {
+
+            if (!inString) {
+
+                // Opening quote
+                inString = true;
+                result += '"';
+
+            } else {
+
+                // Check what comes after quote
+                let j = i + 1;
+
+                while (
+                    j < text.length &&
+                    /\s/.test(text[j])
+                ) {
+                    j++;
+                }
+
+                const next = text[j];
+
+                // These normally mean string is ending
+                if (
+                    next === "," ||
+                    next === "}" ||
+                    next === "]" ||
+                    next === ":" ||
+                    next === undefined
+                ) {
+
+                    result += '"';
+                    inString = false;
+
+                } else {
+
+                    // Quote is inside content
+                    result += '\\"';
+                }
+            }
+
+            continue;
+        }
+
+        // ----------------------------------
+        // Raw newline inside JSON string
+        // ----------------------------------
+
+        if (inString && char === "\n") {
+
+            result += "\\n";
+            continue;
+        }
+
+        // ----------------------------------
+        // Raw carriage return
+        // ----------------------------------
+
+        if (inString && char === "\r") {
+
+            result += "\\r";
+            continue;
+        }
+
+        // ----------------------------------
+        // Raw tab
+        // ----------------------------------
+
+        if (inString && char === "\t") {
+
+            result += "\\t";
+            continue;
+        }
+
+        // ----------------------------------
+        // Other control characters
+        // ----------------------------------
+
+        if (
+            inString &&
+            char.charCodeAt(0) < 32
+        ) {
+
+            result += " ";
+            continue;
+        }
+
+        result += char;
+    }
+
+    return result;
+}
+function repairUnescapedQuotes(text) {
+
+    let result = "";
+    let inString = false;
+    let escaped = false;
+
+    for (let i = 0; i < text.length; i++) {
+
+        const char = text[i];
+
+        // Existing escaped character
+        if (escaped) {
+            result += char;
+            escaped = false;
+            continue;
+        }
+
+        // Backslash
         if (char === "\\") {
 
             result += char;
@@ -59,30 +202,23 @@ function repairUnescapedQuotes(text) {
             continue;
         }
 
-        // -----------------------------------------
-        // Outside JSON string
-        // -----------------------------------------
+        // Quote
+        if (char === '"') {
 
-        if (!inString) {
+            if (!inString) {
 
-            result += char;
-
-            if (char === '"') {
+                // Starting JSON string
+                result += char;
                 inString = true;
+
+                continue;
             }
 
-            continue;
-        }
-
-        // -----------------------------------------
-        // Inside JSON string
-        // -----------------------------------------
-
-        if (char === '"') {
+            // We are already inside a string.
+            // Check what comes after this quote.
 
             let j = i + 1;
 
-            // Ignore spaces after quote
             while (
                 j < text.length &&
                 /\s/.test(text[j])
@@ -92,11 +228,7 @@ function repairUnescapedQuotes(text) {
 
             const next = text[j];
 
-            /*
-             * These characters normally indicate
-             * that the JSON string is ending.
-             */
-
+            // Actual closing quote
             if (
                 next === "," ||
                 next === "}" ||
@@ -105,23 +237,12 @@ function repairUnescapedQuotes(text) {
                 next === undefined
             ) {
 
-                result += '"';
-
+                result += char;
                 inString = false;
 
             } else {
 
-                /*
-                 * Quote is inside the text.
-                 * Convert:
-                 *
-                 * "hello"
-                 *
-                 * into:
-                 *
-                 * \"hello\"
-                 */
-
+                // Quote inside content
                 result += '\\"';
             }
 
@@ -136,31 +257,22 @@ function repairUnescapedQuotes(text) {
 function cleanGeminiJson(text) {
 
     if (!text || typeof text !== "string") {
-        return "";
+        throw new Error("Gemini response is not a string.");
     }
 
     let cleaned = text
-
-        // Markdown remove
+        .replace(/^\uFEFF/, "")
         .replace(/```json/gi, "")
         .replace(/```/g, "")
-
-        // Smart quotes
-        .replace(/[“”]/g, '"')
-        .replace(/[‘’]/g, "'")
-
-        // Remove invisible characters
-        .replace(/[\u200B-\u200D\uFEFF]/g, "")
-
-        // Remove invalid control characters
-        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, " ")
-
+        .replace(/^JSON\s*/i, "")
         .trim();
 
-    // Repair quotes inside JSON string values
-    cleaned = repairUnescapedQuotes(cleaned);
+    // Smart quotes ko normal quote mat banao blindly
+    // Kyunki ye content ke andar invalid quote create kar sakta hai.
+    
+    cleaned = sanitizeJsonStringContent(cleaned);
 
-    return cleaned;
+    return cleaned.trim();
 }
 export async function processChapter(
     classFolder,
@@ -605,112 +717,225 @@ If any of these have empty content, merge them with their associated Proof, Solu
 
 If anything is missing, regenerate before returning.
 
+CRITICAL JSON RULES:
 
+Return ONLY a valid JSON object.
+
+The response MUST be parseable directly using JSON.parse().
+
+For every string value:
+- Escape every double quote inside the string as \"
+- Escape every backslash as \\
+- Escape newline characters as \n
+- Never put an unescaped " inside a string value.
+- Do not use raw line breaks inside JSON strings.
+
+Example of CORRECT JSON:
+
+{
+  "content": "Anshu asks: \"Can I write every natural number as a sum of consecutive numbers?\""
+}
+
+Example of INCORRECT JSON:
+
+{
+  "content": "Anshu asks: "Can I write every natural number as a sum of consecutive numbers?""
+}
+
+Before submitting the response, validate the entire JSON mentally so that JSON.parse() can parse it without any repair.
 `
 ;
 
-    const response = await generateTopicsPlaywright(
-        prompt,
-        pdfPath,
-        accountId
+   let result = null;
+
+for (let attempt = 1; attempt <= MAX_TOPIC_RETRY; attempt++) {
+
+    console.log(
+        `\n========== TOPIC GENERATION ATTEMPT ${attempt}/${MAX_TOPIC_RETRY} ==========\n`
     );
 
-    const cleaned = cleanGeminiJson(response);
+    try {
 
-    if (typeof cleaned !== "string") {
+      let retryPrompt = prompt;
+
+if (attempt > 1) {
+    retryPrompt = `${prompt}
+
+IMPORTANT:
+Your previous response was invalid JSON.
+
+Return ONLY one valid JSON object.
+
+Rules:
+- Do not use Markdown.
+- Do not use code fences.
+- Do not write any explanation outside the JSON.
+- Every property name must use double quotes.
+- Every string value must be valid JSON.
+- Never put a literal line break inside a JSON string.
+- Use \\n for line breaks inside string values.
+- Escape double quotes inside string values correctly.
+- Do not use invalid backslash escapes.
+- Do not add trailing commas.
+- Make sure every { has a matching }.
+- Make sure every [ has a matching ].
+- Validate the complete JSON before returning it.
+`;
+
+}
+
+const response = await generateTopicsPlaywright(
+    retryPrompt,
+    pdfPath,
+    accountId
+);
+
+const cleaned = cleanGeminiJson(response);
+
+if (typeof cleaned !== "string") {
     throw new Error(
         `cleanGeminiJson() returned ${typeof cleaned} instead of a string.`
     );
 }
 
-    console.log("========== RAW CLEANED JSON ==========");
-console.log(cleaned);
-console.log("=======================================");
+        console.log("Cleaned Length:", cleaned.length);
 
-try {
-console.log("================================");
-console.log("Cleaning Completed");
-console.log("Cleaned Length:", cleaned.length);
-console.log(cleaned.substring(0, 500));
-console.log("================================");
+        // ==============================
+        // JSON PARSE
+        // ==============================
 
-try {
+        try {
 
-    result = JSON.parse(cleaned);
-    console.log("✅ JSON Parse Success");
+            result = JSON.parse(cleaned);
 
-    console.log("========== PARSED RESULT CHECK ==========");
-console.log("Result type:", typeof result);
-console.log("Result keys:", Object.keys(result || {}));
-console.log("Tutorials type:", typeof result?.tutorials);
-console.log("Tutorials is array:", Array.isArray(result?.tutorials));
-console.log("Tutorial count:", result?.tutorials?.length);
+            console.log("✅ JSON Parse Success");
+
+        } catch (jsonError) {
+
+            console.log("❌ JSON Parse Failed:");
+            console.log(jsonError.message);
+console.log("========== AROUND POSITION 425 ==========");
+console.log(cleaned.substring(300, 700));
 console.log("==========================================");
+            console.log("Trying JSON Repair...");
 
-} catch (jsonError) {
+            try {
 
-    console.log("\n❌ JSON Parse Failed");
-    console.log(jsonError.message);
+                const repaired = jsonrepair(cleaned);
 
-    console.log("\nTrying JSON Repair...");
+                result = JSON.parse(repaired);
 
-    try {
+                console.log(
+                    "✅ JSON Parse Success After Repair"
+                );
 
-        const repaired = jsonrepair(cleaned);
+            } catch (repairError) {
 
-        console.log("✅ JSON Repaired");
+                console.log(
+                    "❌ JSON Repair Failed:"
+                );
 
-        result = JSON.parse(repaired);
+                console.log(repairError.message);
 
-        console.log("✅ JSON Parse Success After Repair");
+                // Error position dikhao
+                const match =
+                    repairError.message.match(
+                        /position (\d+)/
+                    );
 
-    } catch (repairError) {
+                if (match) {
 
-        console.log("\n========== JSON PARSE ERROR ==========");
-        console.log(repairError.message);
+                    const pos = Number(match[1]);
 
-        const match = repairError.message.match(/position (\d+)/);
+                    console.log(
+                        "\n========== ERROR POSITION =========="
+                    );
 
-if (match) {
+                    console.log(
+                        "Position:",
+                        pos
+                    );
 
-    const pos = Number(match[1]);
+                    console.log(
+                        "\n========== BEFORE ERROR =========="
+                    );
 
-    console.log("\n========== ERROR POSITION ==========");
-    console.log("Position:", pos);
+                    console.log(
+                        cleaned.substring(
+                            Math.max(0, pos - 500),
+                            pos
+                        )
+                    );
 
-    console.log("\n========== BEFORE ERROR ==========");
-    console.log(
-        JSON.stringify(
-            cleaned.substring(
-                Math.max(0, pos - 300),
-                pos
-            )
-        )
-    );
+                    console.log(
+                        "\n========== AFTER ERROR =========="
+                    );
 
-    console.log("\n========== AFTER ERROR ==========");
-    console.log(
-        JSON.stringify(
-            cleaned.substring(
-                pos,
-                pos + 300
-            )
-        )
-    );
+                    console.log(
+                        cleaned.substring(
+                            pos,
+                            pos + 500
+                        )
+                    );
 
-    console.log("\n====================================");
-}
+                    console.log(
+                        "===================================="
+                    );
+                }
 
-        throw repairError;
+                throw repairError;
+            }
+        }
 
+        // ==============================
+        // STRUCTURE VALIDATION
+        // ==============================
+
+        if (
+            !result ||
+            !Array.isArray(result.tutorials)
+        ) {
+
+            throw new Error(
+                "Invalid tutorial data. Expected result.tutorials to be an array."
+            );
+
+        }
+
+        console.log(
+            `✅ Topic generation successful on attempt ${attempt}`
+        );
+
+        // SUCCESS
+        break;
+
+    } catch (err) {
+
+        console.log(
+            `\n❌ Topic generation attempt ${attempt} failed.`
+        );
+
+        console.log(err.message);
+
+        // Last attempt
+        if (attempt === MAX_TOPIC_RETRY) {
+
+            console.log(
+                `❌ Topic generation failed after ${MAX_TOPIC_RETRY} attempts.`
+            );
+
+            throw new Error(
+                `Gemini Error after ${MAX_TOPIC_RETRY} attempts: ${err.message}`
+            );
+        }
+
+        console.log(
+            `⚠️ Retrying topic generation... Attempt ${attempt + 1}/${MAX_TOPIC_RETRY}`
+        );
     }
+}
 
-}
-if (!result || !Array.isArray(result.tutorials)) {
-    throw new Error(
-        `Invalid tutorial data. Expected result.tutorials to be an array, but received: ${typeof result?.tutorials}`
-    );
-}
+   
 
 const mergedTutorials = [];
 
@@ -798,12 +1023,8 @@ if (!validTypes.includes(tutorial.type)) {
     throw new Error(`Invalid tutorial type: ${tutorial.type}`);
 }
 
+}
 
-}
-} catch (err) {
-    console.log(cleaned);
-throw new Error(`Gemini Error: ${err.message}`);
-}
 
 let currentSection = "";
 let childIndex = 0;
@@ -848,15 +1069,18 @@ if (result.tutorials.length === 0) {
 }
 
 console.log(`Detected ${result.tutorials.length} tutorials.`);
-    result.className = classFolder;
-    result.subjectName = subjectFolder;
-    result.pdfPath = pdfPath;
-
     
 console.log(
     `Loaded ${result.tutorials.length} tutorials`
 );
+console.log("BEFORE CLASSNAME:");
+console.log("result:", result);
+console.log("classFolder:", classFolder);
+console.log("result type:", typeof result);
 
+result.className = classFolder;
+result.subjectName = subjectFolder;
+result.pdfPath = pdfPath;
 const safeChapterName = (result.chapterName || "")
     .replace(/[\\/:*?"<>|]/g, "")
     .trim();
@@ -866,10 +1090,6 @@ const safeChapterName = (result.chapterName || "")
         result
     );
 }
-
-result.className = classFolder;
-result.subjectName = subjectFolder;
-result.pdfPath = pdfPath;
 
 const progress = loadProgress(
     classFolder,

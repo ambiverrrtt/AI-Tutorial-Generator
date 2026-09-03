@@ -119,7 +119,7 @@ console.log("Prompt Submitted");
 console.log("Waiting for model-response...");
 
 await page.waitForSelector("model-response", {
-    timeout: 300000
+    timeout: 600000
 });
 
 console.log("model-response Found");
@@ -129,7 +129,7 @@ console.log("Waiting for Stop button...");
 await page.waitForFunction(() => {
     return document.querySelector('button[aria-label*="Stop"]') === null;
 }, {
-    timeout: 300000
+    timeout: 600000
 });
 
 console.log("Stop button disappeared");
@@ -227,28 +227,18 @@ while (true) {
 }
 
 const response = previous;
-let cleanedResponse = response.trim();
 
-// Markdown remove
-cleanedResponse = cleanedResponse
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .replace(/^JSON\s*/i, "")
-
-.replace(/[“”]/g, '"');
-
-// Agar beginning me "JSON" likha ho to hata do
-cleanedResponse = cleanedResponse.replace(/^JSON\s*/i, "");
-
-console.log("Response Ends with :");
-console.log(cleanedResponse.slice(-200));
-console.log("Final Length:", cleanedResponse.length);
-// console.log("Gemini Response:", cleanedResponse);
+console.log("Response Ends with:");
+console.log(response.slice(-200));
+console.log("Final Length:", response.length);
 
 fs.writeFileSync(
     "rawGemini.txt",
-    cleanedResponse,
+    response,
     "utf8"
 );
+
 await safeClosePage(page);
-return cleanedResponse;}
+
+return response;
+}

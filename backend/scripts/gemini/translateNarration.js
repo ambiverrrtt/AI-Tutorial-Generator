@@ -821,148 +821,190 @@ JSON:
 ${JSON.stringify(batchNarrationOnly)}
 `;
 for (let attempt = 1; attempt <= MAX_BATCH_RETRY; attempt++) {
+
     console.log(
-    `\nHindi Batch ${batchIndex + 1} Attempt ${attempt}/${MAX_BATCH_RETRY}\n`
-);
-
-    const response = await generateHindiNarrationPlaywright(
-        prompt,
-        accountId
+        `\nHindi Batch ${batchIndex + 1} Attempt ${attempt}/${MAX_BATCH_RETRY}\n`
     );
-
-    const cleaned = response
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .trim();
-
-let jsonText = cleaned.trim();
-
-// Agar Gemini array return kare
-if (jsonText.startsWith("[")) {
-
-    const end = jsonText.lastIndexOf("]");
-
-    jsonText = jsonText.substring(0, end + 1);
-
-}
-// Agar object return kare
-else {
-
-    const start = jsonText.indexOf("{");
-    const end = jsonText.lastIndexOf("}");
-
-    jsonText =
-        start !== -1 && end !== -1
-            ? jsonText.substring(start, end + 1)
-            : jsonText;
-
-}
-
-    console.log("\n========== RAW RESPONSE ==========\n");
-    console.log(cleaned);
-    console.log("\n==================================\n");
 
     try {
 
-let translatedJson = JSON.parse(jsonText);
+        const response = await generateHindiNarrationPlaywright(
+            prompt,
+            accountId
+        );
+// Gemini error response detect karo
+const geminiErrorPatterns = [
+    "I encountered an error doing what you asked",
+    "Could you try again?",
+    "I'm having a hard time fulfilling your request",
+    "Can I help you with something else instead?"
+];
 
-// Agar Gemini ne array return kiya ho
-if (Array.isArray(translatedJson)) {
-    translatedJson = {
-        narrations: translatedJson
-    };
-}
-
-if (!translatedJson.narration && !translatedJson.narrations) {
-    throw new Error("Gemini returned wrong JSON format.");
-}
-
-if (!translatedJson.narrations) {
-    translatedJson.narrations = translatedJson.narration;
-}
-
-const expectedSceneNumbers =
-    batch.map(scene => Number(scene.scene));
-
-const actualSceneNumbers =
-    translatedJson.narrations.map(
-        item => Number(item.scene)
-    );
-
-const missingScenes =
-    expectedSceneNumbers.filter(
-        sceneNumber =>
-            !actualSceneNumbers.includes(sceneNumber)
-    );
-
-const extraScenes =
-    actualSceneNumbers.filter(
-        sceneNumber =>
-            !expectedSceneNumbers.includes(sceneNumber)
-    );
-
-if (missingScenes.length > 0) {
-    throw new Error(
-        `Gemini returned incomplete translation. Missing scenes: ${missingScenes.join(", ")}`
-    );
-}
-
-if (extraScenes.length > 0) {
-    throw new Error(
-        `Gemini returned unexpected scenes: ${extraScenes.join(", ")}`
-    );
-}
-
-if (
-    translatedJson.narrations.length !==
-    batch.length
-) {
-    throw new Error(
-        `Gemini returned ${translatedJson.narrations.length} scenes, expected ${batch.length}.`
-    );
-}
-translatedBatches.push(
-    translatedJson.narrations
+const isGeminiError = geminiErrorPatterns.some(
+    errorText =>
+        String(response)
+            .toLowerCase()
+            .includes(errorText.toLowerCase())
 );
 
-console.log(
-    `✅ Batch ${batchIndex + 1} Translation Successful`
-);
+if (isGeminiError) {
+    throw new Error(
+        `Gemini returned an error response: ${response}`
+    );
+}
+        const cleaned = response
+            .replace(/```json/gi, "")
+            .replace(/```/g, "")
+            .trim();
 
-console.log(
-    `Translated Scenes: ${translatedJson.narrations
-        .map(item => item.scene)
-        .join(", ")}`
-);
+        let jsonText = cleaned.trim();
 
-break;
+        // Agar Gemini array return kare
+        if (jsonText.startsWith("[")) {
+
+            const end = jsonText.lastIndexOf("]");
+
+            jsonText = jsonText.substring(0, end + 1);
+
+        }
+
+        // Agar object return kare
+        else {
+
+            const start = jsonText.indexOf("{");
+            const end = jsonText.lastIndexOf("}");
+
+            jsonText =
+                start !== -1 && end !== -1
+                    ? jsonText.substring(start, end + 1)
+                    : jsonText;
+
+        }
+
+        console.log("\n========== RAW RESPONSE ==========\n");
+        console.log(cleaned);
+        console.log("\n==================================\n");
+
+
+        let translatedJson = JSON.parse(jsonText);
+
+        // Agar Gemini array return kare
+        if (Array.isArray(translatedJson)) {
+
+            translatedJson = {
+                narrations: translatedJson
+            };
+
+        }
+
+        if (!translatedJson.narration && !translatedJson.narrations) {
+            throw new Error("Gemini returned wrong JSON format.");
+        }
+
+        if (!translatedJson.narrations) {
+            translatedJson.narrations =
+                translatedJson.narration;
+        }
+
+
+        const expectedSceneNumbers =
+            batch.map(scene => Number(scene.scene));
+
+        const actualSceneNumbers =
+            translatedJson.narrations.map(
+                item => Number(item.scene)
+            );
+
+
+        const missingScenes =
+            expectedSceneNumbers.filter(
+                sceneNumber =>
+                    !actualSceneNumbers.includes(sceneNumber)
+            );
+
+        const extraScenes =
+            actualSceneNumbers.filter(
+                sceneNumber =>
+                    !expectedSceneNumbers.includes(sceneNumber)
+            );
+
+
+        if (missingScenes.length > 0) {
+
+            throw new Error(
+                `Gemini returned incomplete translation. Missing scenes: ${missingScenes.join(", ")}`
+            );
+
+        }
+
+        if (extraScenes.length > 0) {
+
+            throw new Error(
+                `Gemini returned unexpected scenes: ${extraScenes.join(", ")}`
+            );
+
+        }
+
+
+        if (
+            translatedJson.narrations.length !==
+            batch.length
+        ) {
+
+            throw new Error(
+                `Gemini returned ${translatedJson.narrations.length} scenes, expected ${batch.length}.`
+            );
+
+        }
+
+
+        translatedBatches.push(
+            translatedJson.narrations
+        );
+
+
+        console.log(
+            `✅ Batch ${batchIndex + 1} Translation Successful`
+        );
+
+        console.log(
+            `Translated Scenes: ${translatedJson.narrations
+                .map(item => item.scene)
+                .join(", ")}`
+        );
+
+        // SUCCESS → retry nahi hoga
+        break;
+
 
     } catch (err) {
 
-        console.log("\n========== JSON PARSE ERROR ==========\n");
-       console.log(err.message);
+        console.log(
+            "\n========== HINDI BATCH ERROR ==========\n"
+        );
 
-const match = err.message.match(/position (\d+)/);
+        console.log(err.message);
 
-if (match) {
-    const pos = Number(match[1]);
+        console.log(
+            `Hindi Batch ${batchIndex + 1} Attempt ${attempt} failed.`
+        );
 
-    console.log("\n===== Error Around =====\n");
 
-    console.log(
-        jsonText.substring(
-            Math.max(0, pos - 120),
-            pos + 120
-        )
-    );
-
-    console.log("\n========================\n");
-}
+        // Last attempt par hi final error throw karo
         if (attempt === MAX_BATCH_RETRY) {
-    throw err;
-}
 
-        console.log("\nRetrying Gemini...\n");
+            console.log(
+                `❌ Hindi Batch ${batchIndex + 1} failed after ${MAX_BATCH_RETRY} attempts.`
+            );
+
+            throw err;
+
+        }
+
+
+        console.log(
+            `⚠️ Retrying Hindi Batch ${batchIndex + 1}...`
+        );
 
     }
 

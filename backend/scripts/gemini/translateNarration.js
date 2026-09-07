@@ -153,7 +153,10 @@ Avoid overly formal words whenever a simpler spoken alternative exists.
 - Use conversational spoken Hindi.
 - Avoid pure literary Hindi.
 
-Keep only technical terms in English.
+Keep mathematical terminology, mathematical numbers, symbols,
+and mathematical expressions in English.
+
+Use natural Hindi-English classroom speech for the rest of the narration.
 
 Examples:
 
@@ -173,18 +176,66 @@ Diagram
 
 Theorem
 
-Do NOT keep ordinary numbers in English.
+NUMBER SPEAKING RULES
 
-Numbers should be spoken naturally in Hindi.
+All ordinary numbers must be spoken in English.
 
-Example:
+Do NOT convert numbers into Hindi words.
+
+Examples:
+
+47
+Speak:
+forty seven
+
+26
+Speak:
+twenty six
+
+91
+Speak:
+ninety one
 
 140
-
 Speak:
+one hundred forty
+
+306
+Speak:
+three hundred six
+
+657
+Speak:
+six hundred fifty seven
+
+22338
+Speak:
+twenty two thousand three hundred thirty eight
+
+15
+Speak:
+fifteen
+
+100
+Speak:
+one hundred
+
+2025
+Speak:
+two thousand twenty five
+
+Numbers must NEVER be spoken as Hindi words.
+
+Do NOT say:
+सैंतालीस
+छब्बीस
+इक्यानवे
 एक सौ चालीस
 
-NOT:
+Say:
+forty seven
+twenty six
+ninety one
 one hundred forty
 
 - Indian teachers naturally mix Hindi and English while teaching. Follow that style.
@@ -243,66 +294,36 @@ MATHEMATICS SPEAKING RULES
 
 Translate the narration exactly as a skilled Indian Mathematics teacher would speak.
 
-Never read mathematical expressions in pure English.
-
-Examples:
-
-140
-Speak:
-एक सौ चालीस
-
-26
-Speak:
-छब्बीस
-
-91
-Speak:
-इक्यानवे
-
-306
-Speak:
-तीन सौ छह
-
-657
-Speak:
-छह सौ सत्तावन
-
-22338
-Speak:
-बाईस हजार तीन सौ अड़तीस
-
 ANGLE WORD RULE
 
-Whenever the English word "angle" appears in the
-mathematics narration and it refers to a mathematical
-angle, ALWAYS replace it with the Hindi word "कोण".
+Whenever the English word "angle" refers to a mathematical angle,
+ALWAYS keep it in English as "angle".
 
 Examples:
 
-angle → कोण
+angle → angle
 
-an angle → एक कोण
+an angle → an angle
 
-two angles → दो कोण
+two angles → two angles
 
-90° angle → 90 डिग्री का कोण
+90° angle → ninety degree angle
 
-120° angle → 120 डिग्री का कोण
+120° angle → one hundred twenty degree angle
 
-angle of rotation → घूर्णन का कोण
+angle of rotation → angle of rotation
 
-angle of symmetry → सममिति का कोण
+angle of symmetry → angle of symmetry
 
-smallest angle → सबसे छोटा कोण
+smallest angle → smallest angle
 
-angle between two lines → दो रेखाओं के बीच का कोण
+angle between two lines → angle between two lines
 
-NEVER pronounce the mathematical word "angle"
-as the English word "एंगल".
+NEVER translate mathematical "angle" into Hindi.
 
-The final Hindi narration must contain "कोण"
-instead of "angle" whenever it refers to
-a mathematical angle.
+NEVER use "कोण".
+
+Always use the English word "angle".
 
 ----------------------------------------
 
@@ -405,167 +426,174 @@ Bad:
 Good:
 क्या आप इस सवाल का जवाब दे सकते हैं?
 
-×
+MATHEMATICAL SYMBOL SPEAKING RULES
 
+×
 Speak:
-गुणा
+times
 
 ÷
-
 Speak:
-भाग
+divided by
 
 =
-
 Speak:
-बराबर
+equals
 
 +
-
 Speak:
-प्लस
+plus
 
 -
-
 Speak:
-माइनस
+minus
 
 >
-
 Speak:
-से बड़ा
+greater than
 
 <
-
 Speak:
-से छोटा
+less than
 
 ≤
-
 Speak:
-से छोटा या बराबर
+less than or equal to
 
 ≥
-
 Speak:
-से बड़ा या बराबर
+greater than or equal to
 
 ------------------------
 
 Read powers naturally.
 
-2²
+POWER SPEAKING RULES
 
+Always speak mathematical powers using English mathematical terms.
+
+2²
 Speak:
-दो का वर्ग
+two square
 
 3²
-
 Speak:
-तीन का वर्ग
+three square
 
 5²
-
 Speak:
-पाँच का वर्ग
+five square
 
 2³
-
 Speak:
-दो का घन
+two cube
 
 6ⁿ
-
 Speak:
-छह की घात n
+six to the power n
 
 x²
-
 Speak:
-x का वर्ग
+x square
 
 x³
-
 Speak:
-x का घन
+x cube
+
+Do NOT use Hindi words such as:
+वर्ग
+घन
+घात
+
+Use:
+square
+cube
+power
 
 Read fractions naturally.
 
-1/2
+FRACTION SPEAKING RULES
 
+Speak fractions using natural English mathematical pronunciation.
+
+1/2
 Speak:
-आधा
+one half
 
 1/3
-
 Speak:
-एक तिहाई
+one third
 
 1/4
-
 Speak:
-एक चौथाई
+one fourth
 
 3/4
-
 Speak:
-तीन चौथाई
+three fourths
 
 5/8
-
 Speak:
-पाँच बटा आठ
+five eighths
+
+Do NOT use Hindi words such as:
+आधा
+तिहाई
+चौथाई
+बटा
 
 ------------------------
 
 Read decimals naturally.
 
-2.5
+DECIMAL SPEAKING RULES
 
+Speak decimal numbers in English.
+
+2.5
 Speak:
-दो दशमलव पाँच
+two point five
 
 3.14
-
 Speak:
-तीन दशमलव एक चार
+three point one four
 
 0.25
-
 Speak:
-शून्य दशमलव दो पाँच
+zero point two five
 
 12.75
-
 Speak:
-बारह दशमलव सात पाँच
+twelve point seven five
+
+Do NOT use:
+दशमलव
 
 Read roots naturally.
 
-√2
+ROOT SPEAKING RULES
 
+Speak roots naturally using English mathematical terminology.
+
+√2
 Speak:
-वर्गमूल दो
+under root two
 
 √3
-
 Speak:
-वर्गमूल तीन
+under root three
 
 √5
-
 Speak:
-वर्गमूल पाँच
+under root five
 
 √10
-
 Speak:
-वर्गमूल दस
+under root ten
 
 √x
-
 Speak:
-वर्गमूल x
+under root x
 
 ------------------------
 
@@ -644,49 +672,47 @@ Speak:
 x − y
 
 Speak:
-एक्स माइनस वाय
+X माइनस Y
 
 2x
-
 Speak:
-दो एक्स
+two x
 
 3y
-
 Speak:
-तीन वाय
+three y
 
 x² + y²
 
 Speak:
-एक्स का वर्ग प्लस वाय का वर्ग
+x square plus y square
 
 a² + b²
 
 Speak:
-ए का वर्ग प्लस बी का वर्ग
+a square plus b square
 
 Read equations naturally.
 
 2² × 5 × 7
 
 Speak:
-दो का वर्ग गुणा पाँच गुणा सात
+two square times five times seven
 
 2 × 3²
 
 Speak:
-दो गुणा तीन का वर्ग
+two times three square
 
 2² × 3 × 13
 
 Speak:
-दो का वर्ग गुणा तीन गुणा तेरह
+two square times three times thirteen
 
 LCM × HCF
 
 Speak:
-एल सी एम गुणा एच सी एफ
+LCM times HCF
 
 Prime factorisation
 
@@ -713,29 +739,26 @@ JSON
 
 Do not translate or expand these abbreviations into full Hindi forms.
 
-Do NOT say:
+Do NOT translate mathematical terminology into Hindi.
 
-two squared
+Use English mathematical terminology naturally.
+
+Use:
+
+square
+cube
+power
 times
+divided by
 plus
 minus
 equals
+greater than
+less than
 
 Translate naturally as an Indian Mathematics teacher would speak.
 
 These rules apply ONLY to narration.
-
-The teacher naturally says:
-
-दो का वर्ग
-
-तीन का घन
-
-पाँच गुणा सात
-
-एल सी एम
-
-एच सी एफ
 
 Prime factorisation
 

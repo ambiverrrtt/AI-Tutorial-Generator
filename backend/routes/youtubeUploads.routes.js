@@ -1,7 +1,6 @@
 import express from "express";
 import ExcelJS from "exceljs";
 import fs from "fs";
-import { EXCEL_FILE } from "../scripts/youtube/youtubeExcel.js";
 
 const router = express.Router();
 

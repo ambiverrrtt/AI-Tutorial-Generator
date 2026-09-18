@@ -80,3 +80,37 @@ console.log("Job File :", file);
     );
 
 }
+
+export function updateJob(jobId, updates) {
+
+    const file = path.join(
+        JOB_FOLDER,
+        `${jobId}.json`
+    );
+
+    console.log("Updating Job:", jobId);
+    console.log("Job File:", file);
+
+    if (!fs.existsSync(file)) {
+        console.log("Job File Not Found:", file);
+        return null;
+    }
+
+    const job = JSON.parse(
+        fs.readFileSync(file, "utf8")
+    );
+
+    const updatedJob = {
+        ...job,
+        ...updates
+    };
+
+    fs.writeFileSync(
+        file,
+        JSON.stringify(updatedJob, null, 2)
+    );
+
+    console.log("Job Updated:", updatedJob);
+
+    return updatedJob;
+}

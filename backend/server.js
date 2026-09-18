@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import processPdfRoutes from "./routes/processPdf.routes.js";
+import jobsRoutes from "./routes/jobs.routes.js";
 import youtubeUploadsRoutes from "./routes/youtubeUploads.routes.js";
 import {
     getYouTubeAuthorizationUrl,
@@ -16,7 +17,7 @@ app.use(express.json());
 app.use("/api", processPdfRoutes);
 app.use("/api/youtube-uploads", youtubeUploadsRoutes);
 app.use("/generated", express.static("generated"));
-
+app.use("/api/jobs", jobsRoutes);
 // ========================================
 // YouTube OAuth - Connect Account
 // ========================================

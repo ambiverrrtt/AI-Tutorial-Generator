@@ -1,4 +1,3 @@
-
 function cleanNarration(text) {
     const value = String(text || "")
         .trim()

@@ -1,27 +1,24 @@
 import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
 import path from "path";
 import { jsonrepair } from "jsonrepair";
 import { saveJson } from "./utils/saveJson.js";
 import { generateNarration } from "./gemini/generateNarration.js";
-import { generateNarrationV2 } from "./gemini/generateNarrationV2.js";
+import { reviewNarration } from "./gemini/reviewNarration.js";
 import { translateNarration } from "./gemini/translateNarration.js";
 import { generateImages } from "./gemini/generateImages.js";
 import { generateAudio } from "./tts/generateAudio.js";
 import { createScenes } from "./tutorial/createScene.js";
 import { mergeTutorial } from "./tutorial/mergeTutorial.js";
-import { callGemini } from "./gemini/geminiRetry.js";
 import { generateTopicsPlaywright } from "./playwright/generateTopics.js";
 import { clearProgress ,saveProgress,loadProgress,markDone,isDone} from "./progressManager.js";
-import { completeJob } from "./jobs/jobManager.js";
-import { uploadVideo } from "./youtube/uploadVideo.js";
+import {
+    completeJob,
+    updateJob
+} from "./jobs/jobManager.js";
 import { generateThumbnail } from "./gemini/generateThumbnail.js";
-import { getOrCreatePlaylist } from "./youtube/playlistManager.js";
 import { saveUploadJob } from "./uploads/uploadManager.js";
-import { extractTeachingSteps } from "./gemini/extractTeachingSteps.js";
-import { generateTeachingPlan } from "./gemini/generateTeachingPlan.js";
-import { generateScenePlan } from "./gemini/generateScenePlan.js";
+
 import { cleanupTutorial } from "./cleanup/cleanupTutorial.js";
 const MAX_TOPIC_RETRY = 3;
 dotenv.config();
@@ -1081,14 +1078,52 @@ console.log("result type:", typeof result);
 result.className = classFolder;
 result.subjectName = subjectFolder;
 result.pdfPath = pdfPath;
+
+}
+
 const safeChapterName = (result.chapterName || "")
     .replace(/[\\/:*?"<>|]/g, "")
     .trim();
-    
+
+const topicFileName =
+    existingJson || `${safeChapterName}.json`;
+
+const topicFile =
+    path
+        .join(
+            "generated",
+            "topics",
+            classFolder,
+            subjectFolder,
+            topicFileName
+        )
+        .replace(/\\/g, "/");
+
+if (!existingJson) {
+
     saveJson(
-        `generated/topics/${classFolder}/${subjectFolder}/${safeChapterName}.json`,
+        topicFile,
         result
     );
+
+}
+
+// ========================================
+// Update Job With Chapter Information
+// ========================================
+
+if (jobId) {
+
+    updateJob(jobId, {
+
+        chapterName:
+            result.chapterName,
+
+        topicFile:
+            topicFile
+
+    });
+
 }
 
 const progress = loadProgress(
@@ -1096,6 +1131,7 @@ const progress = loadProgress(
     subjectFolder,
     result.chapterName
 );
+
 if (progress.completed) {
 
     console.log("\n================================");
@@ -1163,6 +1199,8 @@ console.log("folderName =", folderName);
 
 
     const tutorialKey = folderName;
+
+    
     // ---------------------------------
     // Tutorial Metadata
     // ---------------------------------
@@ -1175,13 +1213,23 @@ console.log("folderName =", folderName);
     tutorial.outputFolder = folderName;
     tutorial.type = tutorial.type || "section";
 
+    const reviewedNarrationPath = path.join(
+    "generated",
+    "reviewed-narrations",
+    tutorial.className,
+    tutorial.subject,
+    safeChapterName,
+    `${jsonFileName}.json`
+);
+
     console.log(tutorial);
     console.log(`Using Account ${accountId}`);
 
     console.log(`\nProcessing Tutorial: ${tutorial.title}`);
 
-    const tutorialCompleted =
+const tutorialCompleted =
     isDone(progress, tutorialKey, "narration") &&
+    isDone(progress, tutorialKey, "reviewed-narration") &&
     isDone(progress, tutorialKey, "images") &&
     isDone(progress, tutorialKey, "thumbnail") &&
     isDone(progress, tutorialKey, "audio") &&
@@ -1213,15 +1261,13 @@ if (tutorialCompleted) {
 
 }
 
-    // ---------------------------------
-    // Narration
-    // ---------------------------------
+    
 
-const safeChapterName = result.chapterName
-    .replace(/[\\/:*?"<>|]/g, "")
-    .trim();
+       // ---------------------------------
+// Narration Paths
+// ---------------------------------
 
-       const narrationPath = path.join(
+const narrationPath = path.join(
     "generated",
     "narrations",
     tutorial.className,
@@ -1229,24 +1275,54 @@ const safeChapterName = result.chapterName
     safeChapterName,
     `${jsonFileName}.json`
 );
-console.log("Narration Path:", narrationPath);
-console.log("Exists:", fs.existsSync(narrationPath));
-        let narration=null;
 
-     if (
+console.log("Original Narration Path:", narrationPath);
+console.log("Original Exists:", fs.existsSync(narrationPath));
 
-    isDone(progress, tutorialKey, "narration") ||
+console.log("Reviewed Narration Path:", reviewedNarrationPath);
+console.log("Reviewed Exists:", fs.existsSync(reviewedNarrationPath));
 
-    fs.existsSync(narrationPath)
+let narration = null;
 
-) {
 
-    console.log("Narration Already Completed (Progress)");
-    
-    if (fs.existsSync(narrationPath)) {
+// ==========================================
+// REVIEWED NARRATION STATUS FROM PROGRESS
+// ==========================================
+
+if (isDone(progress, tutorialKey, "reviewed-narration")) {
+
+    console.log("Reviewed Narration Already Completed in Progress.");
+    console.log("Loading reviewed narration...");
+
+    if (!fs.existsSync(reviewedNarrationPath)) {
+
+        throw new Error(
+            `Reviewed Narration JSON not available for tutorial: ${reviewedNarrationPath}`
+        );
+
+    }
 
     narration = JSON.parse(
-        fs.readFileSync(narrationPath, "utf8")
+        fs.readFileSync(reviewedNarrationPath, "utf8")
+    );
+
+    narration.className = tutorial.className;
+    narration.subject = tutorial.subject;
+    narration.chapterName = result.chapterName;
+
+}
+
+
+// ==========================================
+// LOAD EXISTING REVIEWED NARRATION FILE
+// ==========================================
+
+else if (fs.existsSync(reviewedNarrationPath)) {
+
+    console.log("Reviewed Narration File Found.");
+
+    narration = JSON.parse(
+        fs.readFileSync(reviewedNarrationPath, "utf8")
     );
 
     narration.className = tutorial.className;
@@ -1254,47 +1330,15 @@ console.log("Exists:", fs.existsSync(narrationPath));
     narration.chapterName = result.chapterName;
 
     markDone(
-    progress,
-    tutorialKey,
-    "narration"
-);
-
-saveProgress(
-    classFolder,
-    subjectFolder,
-    result.chapterName,
-    progress,
-    i,
-    "narration"
-);
-
-}
-      }
-else {
-
-console.log("Generating Narration...");
-
-narration = await generateNarration(
-    pdfPath,
-    tutorial,
-    accountId
-);
-
-narration = {
-    tutorialId: tutorial.id,
-    sectionNumber: tutorial.sectionNumber,
-    title: tutorial.title,
-    className: tutorial.className,
-    subject: tutorial.subject,
-    chapterName: result.chapterName,
-    type: tutorial.type,
-    scenes: narration.scenes
-};
+        progress,
+        tutorialKey,
+        "narration"
+    );
 
     markDone(
         progress,
         tutorialKey,
-        "narration"
+        "reviewed-narration"
     );
 
     saveProgress(
@@ -1307,21 +1351,152 @@ narration = {
     );
 
 }
-    
-if (!narration && fs.existsSync(narrationPath)) {
 
-    narration = JSON.parse(
-        fs.readFileSync(narrationPath,"utf8")
+
+// ==========================================
+// GENERATE NARRATION + GEMINI REVIEW
+// ==========================================
+
+else {
+
+    console.log("Reviewed narration not found.");
+
+    // ==========================================
+    // ORIGINAL NARRATION ALREADY EXISTS
+    // ==========================================
+
+    if (fs.existsSync(narrationPath)) {
+
+        console.log("Original narration found.");
+        console.log("Loading existing original narration...");
+        console.log("Skipping Teaching Steps generation.");
+
+        // Load already generated original narration
+        narration = JSON.parse(
+            fs.readFileSync(narrationPath, "utf8")
+        );
+
+        narration.className = tutorial.className;
+        narration.subject = tutorial.subject;
+        narration.chapterName = result.chapterName;
+
+        // ==========================================
+        // REVIEW EXISTING ORIGINAL NARRATION
+        // ==========================================
+
+        console.log("Starting Gemini review of existing narration...");
+
+        narration = await reviewNarration(
+            tutorial.content,
+            narration,
+            accountId,
+            reviewedNarrationPath
+        );
+
+        narration.className = tutorial.className;
+        narration.subject = tutorial.subject;
+        narration.chapterName = result.chapterName;
+
+        // ==========================================
+        // UPDATE PROGRESS
+        // ==========================================
+
+        markDone(
+            progress,
+            tutorialKey,
+            "narration"
+        );
+
+        markDone(
+            progress,
+            tutorialKey,
+            "reviewed-narration"
+        );
+
+        saveProgress(
+            classFolder,
+            subjectFolder,
+            result.chapterName,
+            progress,
+            i,
+            "narration"
+        );
+
+    }
+
+    // ==========================================
+    // ORIGINAL NARRATION DOES NOT EXIST
+    // ==========================================
+
+    else {
+
+        console.log("Original narration not found.");
+        console.log("Generating Narration...");
+        console.log("Generating Teaching Steps...");
+
+        narration = await generateNarration(
+            pdfPath,
+            tutorial,
+            accountId
+        );
+
+        console.log(
+        "Narration generation and review completed."
     );
 
-    narration.className=tutorial.className;
-    narration.subject=tutorial.subject;
+        // ==========================================
+        // UPDATE PROGRESS
+        // ==========================================
+
+        markDone(
+            progress,
+            tutorialKey,
+            "narration"
+        );
+
+        markDone(
+            progress,
+            tutorialKey,
+            "reviewed-narration"
+        );
+
+        saveProgress(
+            classFolder,
+            subjectFolder,
+            result.chapterName,
+            progress,
+            i,
+            "narration"
+        );
+    }
+}
+
+// ==========================================
+// SAFETY FALLBACK
+// ==========================================
+
+if (!narration && fs.existsSync(reviewedNarrationPath)) {
+
+    narration = JSON.parse(
+        fs.readFileSync(reviewedNarrationPath, "utf8")
+    );
+
+    narration.className = tutorial.className;
+    narration.subject = tutorial.subject;
     narration.chapterName = result.chapterName;
 
 }
 
+
+// ==========================================
+// FINAL CHECK
+// ==========================================
+
 if (!narration) {
-    throw new Error(`Narration JSON not available for tutorial: ${narrationPath}`);
+
+    throw new Error(
+        `Reviewed Narration JSON not available for tutorial: ${reviewedNarrationPath}`
+    );
 
 }
 
@@ -1356,14 +1531,9 @@ if (fs.existsSync(imageFolder)) {
 }
 
 if (
-
-    isDone(progress, tutorialKey, "images") ||
-
-    (
-        fs.existsSync(imageFolder) &&
-        imageCount === narration.scenes.length
-    )
-
+    isDone(progress, tutorialKey, "images") &&
+    fs.existsSync(imageFolder) &&
+    imageCount === narration.scenes.length
 ) {
 
     console.log("Images Already Completed");
@@ -1493,14 +1663,9 @@ if (fs.existsSync(audioFolder)) {
 }
 
 if (
-
-    isDone(progress, tutorialKey, "audio") ||
-
-    (
-        fs.existsSync(audioFolder) &&
-        audioCount === narration.scenes.length
-    )
-
+    isDone(progress, tutorialKey, "audio") &&
+    fs.existsSync(audioFolder) &&
+    audioCount === narration.scenes.length
 ) {
 
     console.log("Audio Already Completed");
@@ -1538,17 +1703,17 @@ if (
         `Generating Audio (${audioCount}/${narration.scenes.length})`
     );
 
-    if (!narration && fs.existsSync(narrationPath)) {
+    if (!narration && fs.existsSync(reviewedNarrationPath)) {
 
-        narration = JSON.parse(
-            fs.readFileSync(narrationPath, "utf8")
-        );
+    narration = JSON.parse(
+        fs.readFileSync(reviewedNarrationPath, "utf8")
+    );
 
-        narration.className = tutorial.className;
-        narration.subject = tutorial.subject;
-        narration.chapterName = result.chapterName;
+    narration.className = tutorial.className;
+    narration.subject = tutorial.subject;
+    narration.chapterName = result.chapterName;
 
-    }
+}
 
     await generateAudio(narration);
 
@@ -1597,14 +1762,9 @@ if (fs.existsSync(videoFolder)) {
 }
 
 if (
-
-    isDone(progress, tutorialKey, "scene") ||
-
-    (
-        fs.existsSync(videoFolder) &&
-        sceneCount === narration.scenes.length
-    )
-
+    isDone(progress, tutorialKey, "scene") &&
+    fs.existsSync(videoFolder) &&
+    sceneCount === narration.scenes.length
 ) {
 
     console.log("Scene Videos Already Completed");
@@ -1630,7 +1790,7 @@ if (
     saveProgress(
         classFolder,
         subjectFolder,
-        safeChapterName,
+        result.chapterName,
         progress,
         i,
         "scene"
@@ -1642,17 +1802,17 @@ if (
         `Creating Scene Videos (${sceneCount}/${narration.scenes.length})`
     );
 
-    if (!narration && fs.existsSync(narrationPath)) {
+   if (!narration && fs.existsSync(reviewedNarrationPath)) {
 
-        narration = JSON.parse(
-            fs.readFileSync(narrationPath, "utf8")
-        );
+    narration = JSON.parse(
+        fs.readFileSync(reviewedNarrationPath, "utf8")
+    );
 
-        narration.className = tutorial.className;
-        narration.subject = tutorial.subject;
-        narration.chapterName = result.chapterName;
+    narration.className = tutorial.className;
+    narration.subject = tutorial.subject;
+    narration.chapterName = result.chapterName;
 
-    }
+}
 
     await createScenes(narration);
 
@@ -1704,14 +1864,12 @@ if (fs.existsSync(path.dirname(tutorialVideo))) {
 console.log("===============================\n");
 
 if (
-
-    isDone(progress, tutorialKey, "merge") ||
-
-    fs.existsSync(tutorialVideo)
-
+    isDone(progress, tutorialKey, "merge") &&
+    fs.existsSync(tutorialVideo) &&
+    isDone(progress, tutorialKey, "scene")
 ) {
 
- console.log("Merge Already Completed (Progress)");
+    console.log("Merge Already Completed.");
 
     markDone(
         progress,
@@ -1727,26 +1885,30 @@ if (
         i,
         "merge"
     );
-    
-} else {
+
+}
+else {
 
     console.log("Calling mergeTutorial...");
 
-    if (!narration && fs.existsSync(narrationPath)) {
+    if (!narration && fs.existsSync(reviewedNarrationPath)) {
 
-    narration = JSON.parse(
-        fs.readFileSync(narrationPath, "utf8")
-    );
+        narration = JSON.parse(
+            fs.readFileSync(
+                reviewedNarrationPath,
+                "utf8"
+            )
+        );
 
-    narration.className = tutorial.className;
-    narration.subject = tutorial.subject;
-    narration.chapterName = result.chapterName;
+        narration.className = tutorial.className;
+        narration.subject = tutorial.subject;
+        narration.chapterName = result.chapterName;
 
-}
+    }
 
     await mergeTutorial(narration);
-        console.log("English Merge Finished");
 
+    console.log("English Merge Finished");
 
     markDone(
         progress,
@@ -1883,19 +2045,16 @@ const hindiNarrationPath = path.join(
     `${jsonFileName}.json`
 );
 
-let hindiNarration=null;
+let hindiNarration = null;
 
-if (
 
-    isDone(progress, tutorialKey, "hindi-narration") ||
+// ---------------------------------
+// Load existing Hindi narration
+// ---------------------------------
 
-    fs.existsSync(hindiNarrationPath)
+if (fs.existsSync(hindiNarrationPath)) {
 
-) {
-
-    console.log("Hindi Narration Already Completed (Progress)");
-
-    if (fs.existsSync(hindiNarrationPath)) {
+    console.log("Hindi Narration File Found.");
 
     hindiNarration = JSON.parse(
         fs.readFileSync(
@@ -1904,46 +2063,72 @@ if (
         )
     );
 
-    
     hindiNarration.className = tutorial.className;
-hindiNarration.subject = tutorial.subject;
-hindiNarration.chapterName = result.chapterName;
+    hindiNarration.subject = tutorial.subject;
+    hindiNarration.chapterName = result.chapterName;
+
+}
+
+
+// ---------------------------------
+// Check whether Hindi narration is valid
+// for current reviewed narration
+// ---------------------------------
+
+const hindiNarrationValid =
+    hindiNarration &&
+    Array.isArray(hindiNarration.scenes) &&
+    hindiNarration.scenes.length === narration.scenes.length;
+
+
+// ---------------------------------
+// Generate Hindi narration if needed
+// ---------------------------------
+
+if (
+    isDone(progress, tutorialKey, "hindi-narration") &&
+    hindiNarrationValid
+) {
+
+    console.log("Hindi Narration Already Completed.");
 
     markDone(
-    progress,
-    tutorialKey,
-    "hindi-narration"
-);
+        progress,
+        tutorialKey,
+        "hindi-narration"
+    );
 
-saveProgress(
-    classFolder,
-    subjectFolder,
-    result.chapterName,
-    progress,
-    i,
-    "hindi-narration"
-);
+    saveProgress(
+        classFolder,
+        subjectFolder,
+        result.chapterName,
+        progress,
+        i,
+        "hindi-narration"
+    );
 
 }
-}
- else {
-    
+else {
+
     console.log("Generating Hindi Narration...");
 
     hindiNarration = await translateNarration(
-    narration,
-    accountId
-);
+        narration,
+        accountId
+    );
+
     hindiNarration.className = tutorial.className;
     hindiNarration.subject = tutorial.subject;
-hindiNarration.chapterName = result.chapterName;
+    hindiNarration.chapterName = result.chapterName;
 
-    console.log("Saving Hindi Narration from processChapter.js");
+    console.log(
+        "Saving Hindi Narration from processChapter.js"
+    );
 
     saveJson(
-    `generated/narrations-hi/${tutorial.className}/${tutorial.subject}/${safeChapterName}/${jsonFileName}.json`,
-    hindiNarration
-);
+        hindiNarrationPath,
+        hindiNarration
+    );
 
     markDone(
         progress,
@@ -1962,21 +2147,17 @@ hindiNarration.chapterName = result.chapterName;
 
 }
 
-if (!hindiNarration && fs.existsSync(hindiNarrationPath)) {
 
-    hindiNarration = JSON.parse(
-        fs.readFileSync(hindiNarrationPath, "utf8")
-    );
-
-    hindiNarration.className = tutorial.className;
-    hindiNarration.subject = tutorial.subject;
-    hindiNarration.chapterName = result.chapterName;
-
-
-}
+// ---------------------------------
+// Final Check
+// ---------------------------------
 
 if (!hindiNarration) {
-    throw new Error(`Hindi Narration JSON not available for tutorial: ${hindiNarrationPath}`);
+
+    throw new Error(
+        `Hindi Narration JSON not available for tutorial: ${hindiNarrationPath}`
+    );
+
 }
 
 // Hindi Audio
@@ -1990,93 +2171,31 @@ const hindiAudioFolder = path.join(
     folderName
 );
 
-// Hindi Scene Videos
-
-const hindiVideoFolder = path.join(
-    "generated",
-    "video-hi",
-    tutorial.className,
-    tutorial.subject,
-    safeChapterName,
-    folderName
-);
-
-// Hindi Merged Tutorial Video
-
-const hindiTutorialVideo = path.join(
-    "generated",
-    "video-hi",
-    tutorial.className,
-    tutorial.subject,
-safeChapterName,
-    folderName,
-    "tutorial.mp4"
-);
-
 let hindiAudioCount = 0;
 
 if (fs.existsSync(hindiAudioFolder)) {
 
     hindiAudioCount = fs
         .readdirSync(hindiAudioFolder)
-   .filter(file =>
-    /^\d+\.wav$/.test(file)
-)
+        .filter(file =>
+            /^\d+\.wav$/.test(file)
+        )
         .length;
 
 }
 
+
+// ---------------------------------
+// Check Hindi Audio Completion
+// ---------------------------------
+
 if (
+    isDone(progress, tutorialKey, "hindi-audio") &&
+    fs.existsSync(hindiAudioFolder) &&
+    hindiAudioCount === hindiNarration.scenes.length
+) {
 
-    isDone(progress, tutorialKey, "hindi-audio") ||
-
-    (
-        fs.existsSync(hindiAudioFolder) &&
-        hindiAudioCount === hindiNarration.scenes.length
-    )
-
-){
-
-    console.log("Hindi Audio Already Completed (Progress)");
-markDone(
-    progress,
-    tutorialKey,
-    "hindi-audio"
-);
-
-saveProgress(
-    classFolder,
-    subjectFolder,
-    result.chapterName,
-    progress,
-    i,
-    "hindi-audio"
-);
-
-
-} else {
-
-    console.log(
-        `Generating Hindi Audio (${hindiAudioCount}/${hindiNarration.scenes.length})`
-    );
-
-    if (!hindiNarration && fs.existsSync(hindiNarrationPath)) {
-
-    hindiNarration = JSON.parse(
-        fs.readFileSync(hindiNarrationPath, "utf8")
-    );
-
-    hindiNarration.className = tutorial.className;
-    hindiNarration.subject = tutorial.subject;
-    hindiNarration.chapterName = result.chapterName;
-
-
-}
-
-    await generateAudio(
-        hindiNarration,
-        "hi"
-    );
+    console.log("Hindi Audio Already Completed.");
 
     markDone(
         progress,
@@ -2094,6 +2213,84 @@ saveProgress(
     );
 
 }
+else {
+
+    console.log(
+        `Generating Hindi Audio (${hindiAudioCount}/${hindiNarration.scenes.length})`
+    );
+
+
+    // ---------------------------------
+    // Load Hindi narration if required
+    // ---------------------------------
+
+    if (
+        !hindiNarration &&
+        fs.existsSync(hindiNarrationPath)
+    ) {
+
+        hindiNarration = JSON.parse(
+            fs.readFileSync(
+                hindiNarrationPath,
+                "utf8"
+            )
+        );
+
+        hindiNarration.className =
+            tutorial.className;
+
+        hindiNarration.subject =
+            tutorial.subject;
+
+        hindiNarration.chapterName =
+            result.chapterName;
+
+    }
+
+
+    // ---------------------------------
+    // Generate Hindi Audio
+    // ---------------------------------
+
+    await generateAudio(
+        hindiNarration,
+        "hi"
+    );
+
+
+    // ---------------------------------
+    // Mark Completed
+    // ---------------------------------
+
+    markDone(
+        progress,
+        tutorialKey,
+        "hindi-audio"
+    );
+
+    saveProgress(
+        classFolder,
+        subjectFolder,
+        result.chapterName,
+        progress,
+        i,
+        "hindi-audio"
+    );
+
+}
+
+// ---------------------------------
+// Hindi Scene Videos
+// ---------------------------------
+
+const hindiVideoFolder = path.join(
+    "generated",
+    "video-hi",
+    tutorial.className,
+    tutorial.subject,
+    safeChapterName,
+    folderName
+);
 
 let hindiSceneCount = 0;
 
@@ -2109,55 +2306,83 @@ if (fs.existsSync(hindiVideoFolder)) {
 
 }
 
+
+// ---------------------------------
+// Check Hindi Scene Completion
+// ---------------------------------
+
 if (
-
-    isDone(progress, tutorialKey, "hindi-scene") ||
-
-    (
-        fs.existsSync(hindiVideoFolder) &&
-        hindiSceneCount === hindiNarration.scenes.length
-    )
-
+    isDone(progress, tutorialKey, "hindi-scene") &&
+    fs.existsSync(hindiVideoFolder) &&
+    hindiSceneCount === hindiNarration.scenes.length
 ) {
 
-    console.log("Hindi Scene Videos Already Completed (Progress)");
+    console.log("Hindi Scene Videos Already Completed.");
 
     markDone(
-    progress,
-    tutorialKey,
-    "hindi-scene"
-);
+        progress,
+        tutorialKey,
+        "hindi-scene"
+    );
 
-saveProgress(
-    classFolder,
-    subjectFolder,
-    result.chapterName,
-    progress,
-    i,
-    "hindi-scene"
-);
+    saveProgress(
+        classFolder,
+        subjectFolder,
+        result.chapterName,
+        progress,
+        i,
+        "hindi-scene"
+    );
 
-} else {
+}
+else {
 
     console.log(
         `Creating Hindi Scene Videos (${hindiSceneCount}/${hindiNarration.scenes.length})`
     );
-if (!hindiNarration && fs.existsSync(hindiNarrationPath)) {
-
-    hindiNarration = JSON.parse(
-        fs.readFileSync(hindiNarrationPath, "utf8")
-    );
-
-    hindiNarration.className = tutorial.className;
-    hindiNarration.subject = tutorial.subject;
-    hindiNarration.chapterName = result.chapterName;
 
 
-}
+    // ---------------------------------
+    // Load Hindi narration if required
+    // ---------------------------------
+
+    if (
+        !hindiNarration &&
+        fs.existsSync(hindiNarrationPath)
+    ) {
+
+        hindiNarration = JSON.parse(
+            fs.readFileSync(
+                hindiNarrationPath,
+                "utf8"
+            )
+        );
+
+        hindiNarration.className =
+            tutorial.className;
+
+        hindiNarration.subject =
+            tutorial.subject;
+
+        hindiNarration.chapterName =
+            result.chapterName;
+
+    }
+
+
+    // ---------------------------------
+    // Generate Hindi Scene Videos
+    // ---------------------------------
+
     await createScenes(
         hindiNarration,
         "hi"
     );
+
+
+    // ---------------------------------
+    // Mark Completed
+    // ---------------------------------
 
     markDone(
         progress,
@@ -2176,45 +2401,85 @@ if (!hindiNarration && fs.existsSync(hindiNarrationPath)) {
 
 }
 
+// ---------------------------------
+// Hindi Merged Tutorial Video
+// ---------------------------------
+
+const hindiTutorialVideo = path.join(
+    "generated",
+    "video-hi",
+    tutorial.className,
+    tutorial.subject,
+    safeChapterName,
+    folderName,
+    "tutorial.mp4"
+);
+
+
+// ---------------------------------
+// Check Hindi Merge Completion
+// ---------------------------------
+
 if (
-
-    isDone(progress, tutorialKey, "hindi-merge") ||
-
-    fs.existsSync(hindiTutorialVideo)
-
+    isDone(progress, tutorialKey, "hindi-merge") &&
+    fs.existsSync(hindiTutorialVideo) &&
+    isDone(progress, tutorialKey, "hindi-scene")
 ) {
 
-    console.log("Hindi Merge Already Completed (Progress)");
+    console.log("Hindi Merge Already Completed.");
 
     markDone(
-    progress,
-    tutorialKey,
-    "hindi-merge"
-);
-
-saveProgress(
-    classFolder,
-    subjectFolder,
-    result.chapterName,
-    progress,
-    i,
-    "hindi-merge"
-);
-
-} else {
-
-    console.log("Calling Hindi mergeTutorial...");
-    if (!hindiNarration && fs.existsSync(hindiNarrationPath)) {
-
-    hindiNarration = JSON.parse(
-        fs.readFileSync(hindiNarrationPath, "utf8")
+        progress,
+        tutorialKey,
+        "hindi-merge"
     );
 
-    hindiNarration.className = tutorial.className;
-    hindiNarration.subject = tutorial.subject;
-hindiNarration.chapterName = result.chapterName;
+    saveProgress(
+        classFolder,
+        subjectFolder,
+        result.chapterName,
+        progress,
+        i,
+        "hindi-merge"
+    );
 
 }
+else {
+
+    console.log("Calling Hindi mergeTutorial...");
+
+
+    // ---------------------------------
+    // Load Hindi narration if required
+    // ---------------------------------
+
+    if (
+        !hindiNarration &&
+        fs.existsSync(hindiNarrationPath)
+    ) {
+
+        hindiNarration = JSON.parse(
+            fs.readFileSync(
+                hindiNarrationPath,
+                "utf8"
+            )
+        );
+
+        hindiNarration.className =
+            tutorial.className;
+
+        hindiNarration.subject =
+            tutorial.subject;
+
+        hindiNarration.chapterName =
+            result.chapterName;
+
+    }
+
+
+    // ---------------------------------
+    // Merge Hindi Scene Videos
+    // ---------------------------------
 
     await mergeTutorial(
         hindiNarration,
@@ -2222,6 +2487,11 @@ hindiNarration.chapterName = result.chapterName;
     );
 
     console.log("Hindi Merge Finished");
+
+
+    // ---------------------------------
+    // Mark Completed
+    // ---------------------------------
 
     markDone(
         progress,
@@ -2244,41 +2514,68 @@ hindiNarration.chapterName = result.chapterName;
 // Hindi Upload Queue
 // ---------------------------------
 
-if (isDone(progress, tutorialKey, "upload-hi")) {
+if (
+    isDone(progress, tutorialKey, "upload-hi") &&
+    fs.existsSync(hindiTutorialVideo)
+) {
 
-    console.log("Hindi Upload Queue Already Completed");
+    console.log("Hindi Upload Queue Already Completed.");
 
-} else if (!fs.existsSync(hindiTutorialVideo)) {
+}
+else if (!fs.existsSync(hindiTutorialVideo)) {
 
-    console.log("Hindi tutorial video not found. Upload job skipped.");
+    console.log(
+        "Hindi tutorial video not found. Upload job skipped."
+    );
 
-} else {
+}
+else {
 
-    console.log("Adding Hindi Video To Upload Queue...");
+    console.log(
+        "Adding Hindi Video To Upload Queue..."
+    );
 
-   await saveUploadJob({
-        jobId: `${tutorial.className}_${tutorial.subject}_${result.chapterName}_${tutorial.title}_hi`,
+    await saveUploadJob({
 
-        className: tutorial.className,
-        subject: tutorial.subject,
-        chapterName: result.chapterName,
+        jobId:
+            `${tutorial.className}_${tutorial.subject}_${result.chapterName}_${tutorial.title}_hi`,
 
-        tutorialTitle: tutorial.title,
-youtubeAccountId: youtubeAccountId,
-        language: "hi",
+        className:
+            tutorial.className,
 
-        videoPath: hindiTutorialVideo,
+        subject:
+            tutorial.subject,
 
-        thumbnailPath: path.join(
-            imageFolder,
-            "thumbnail.png"
-        ),
+        chapterName:
+            result.chapterName,
 
-        status: "pending",
+        tutorialTitle:
+            tutorial.title,
 
-        retryCount: 0,
+        youtubeAccountId:
+            youtubeAccountId,
 
-        createdAt: new Date().toISOString()
+        language:
+            "hi",
+
+        videoPath:
+            hindiTutorialVideo,
+
+        thumbnailPath:
+            path.join(
+                imageFolder,
+                "thumbnail.png"
+            ),
+
+        status:
+            "pending",
+
+        retryCount:
+            0,
+
+        createdAt:
+            new Date().toISOString()
+
     });
 
     markDone(
@@ -2296,24 +2593,28 @@ youtubeAccountId: youtubeAccountId,
         "upload-hi"
     );
 
-        // ========================================
-// Cleanup Completed Tutorial Files
-// ========================================
 
-await cleanupTutorial({
+    // ========================================
+    // Cleanup Completed Tutorial Files
+    // ========================================
 
-    className: tutorial.className,
+    await cleanupTutorial({
 
-    subject: tutorial.subject,
+        className:
+            tutorial.className,
 
-    chapterName: result.chapterName,
+        subject:
+            tutorial.subject,
 
-    tutorialTitle: tutorial.title,
+        chapterName:
+            result.chapterName,
 
-    folderName
+        tutorialTitle:
+            tutorial.title,
 
-});
+        folderName
 
+    });
 
 }
 

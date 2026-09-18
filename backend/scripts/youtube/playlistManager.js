@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { google } from "googleapis";
-import { getYouTubeClient } from "./auth.js";
+// import { getYouTubeClient } from "./auth.js";
+import { getYouTubeClient } from "../../youtube-accounts/youtubeClient.js";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);

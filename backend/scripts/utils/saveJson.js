@@ -3,7 +3,7 @@ import path from "path";
 
 export function saveJson(filePath, data) {
 
-    const folder = path.dirname(filePath);
+const folder = path.dirname(filePath);
  
 const fileName = path.basename(filePath);
 

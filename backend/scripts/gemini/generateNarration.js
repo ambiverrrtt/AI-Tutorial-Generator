@@ -6,6 +6,7 @@ import { extractTeachingSteps } from "./extractTeachingSteps.js";
 // import { generateTeachingPlan } from "./generateTeachingPlan.js";
 import { generateMainIdea } from "./generateMainIdea.js";
 import { generateNarrationV2 } from "./generateNarrationV2.js";
+import { reviewNarration } from "./reviewNarration.js";
 import { splitTeachingConcepts } from "./splitTeachingConcepts.js";
 import { generateLessonPlan } from "./generateLessonPlan.js";
 dotenv.config();
@@ -322,6 +323,8 @@ const narration =
     );
 
 
+
+    
 const result = {
     tutorialId: tutorial.id,
     sectionNumber: tutorial.sectionNumber,
@@ -367,11 +370,57 @@ const fileName = (
     
     .trim();
 
+// ------------------------------------------
+// SAVE ORIGINAL NARRATION
+// ------------------------------------------
+
+const originalNarrationPath =
+    `generated/narrations/${tutorial.className}/${tutorial.subject}/${safeChapterName}/${fileName}.json`;
+
 saveJson(
-  `generated/narrations/${tutorial.className}/${tutorial.subject}/${safeChapterName}/${fileName}.json`,
-  result
+    originalNarrationPath,
+    result
 );
 
-console.log(`Narration Saved: ${tutorial.title}`);
-return result;
+console.log(`Original Narration Saved: ${tutorial.title}`);
+
+// ------------------------------------------
+// GEMINI NARRATION REVIEW
+// ------------------------------------------
+
+console.log("\n========================================");
+console.log("Starting Narration Review...");
+console.log("========================================");
+
+const reviewedNarrationPath =
+    `generated/reviewed-narrations/${tutorial.className}/${tutorial.subject}/${safeChapterName}/${fileName}.json`;
+
+    console.log("Generating Gemini Review...");
+
+const reviewedNarration = await reviewNarration(
+    tutorial.content,
+    result,
+    accountId,
+    reviewedNarrationPath
+);
+
+console.log("Reviewed narration received.");
+
+// ------------------------------------------
+// USE REVIEWED NARRATION FOR NEXT STAGES
+// ------------------------------------------
+
+console.log(
+    `Original scenes: ${result.scenes.length}`
+);
+
+console.log(
+    `Reviewed scenes: ${reviewedNarration.scenes.length}`
+);
+
+console.log(
+    `Reviewed Narration Saved: ${reviewedNarrationPath}`
+);
+
+return reviewedNarration;
 }

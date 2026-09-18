@@ -1,6 +1,7 @@
 import fs from "fs";
 import { google } from "googleapis";
-import { getYouTubeClient } from "./auth.js";
+// import { getYouTubeClient } from "./auth.js";
+import { getYouTubeClient } from "../../youtube-accounts/youtubeClient.js";
 import sharp from "sharp";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -46,7 +47,7 @@ console.log("Thumbnail:", absoluteThumbnailPath);
     });
 
     console.log(`Uploading ${title} (${language})`);
-console.log("STEP: Starting YouTube video upload...");
+
    let videoId;
 
 if (existingVideoId) {
